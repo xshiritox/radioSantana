@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { useRadioPlayer } from '../../composables/useRadioPlayer';
-import { PlayIcon, PauseIcon } from '@heroicons/vue/24/solid';
-import BaseButton from '../common/BaseButton.vue';
+// import { useRadioPlayer } from '../../composables/useRadioPlayer';
 
-const { isPlaying, isLoading, togglePlay, currentTrack } = useRadioPlayer();
+// const { isPlaying, isLoading, togglePlay, currentTrack } = useRadioPlayer();
 </script>
 
 <template>

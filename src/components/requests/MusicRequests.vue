@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { MusicalNoteIcon, HeartIcon } from '@heroicons/vue/24/outline';
 import BaseButton from '../common/BaseButton.vue';
 import type { MusicRequest } from '../../types/radio';

@@ -2,7 +2,7 @@
 import { onMounted } from 'vue';
 import { useShows } from '../../composables/useShows';
 
-const { shows, currentShow, getCurrentShow, getUpcomingShows } = useShows();
+const { shows, currentShow, getCurrentShow, /* getUpcomingShows */ } = useShows();
 
 onMounted(() => {
   getCurrentShow();

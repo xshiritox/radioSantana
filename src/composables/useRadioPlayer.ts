@@ -133,12 +133,20 @@ export function useRadioPlayer() {
       let totalBitrate = 0;
       let hasBitrate = false;
 
-      sources.forEach(source => {
+      interface IcecastSource {
+        listeners?: string | number;
+        bitrate?: string | number;
+        [key: string]: any;
+      }
+
+      const sourcesTyped: IcecastSource[] = sources as IcecastSource[];
+
+      sourcesTyped.forEach((source: IcecastSource) => {
         if (source.listeners) {
-          totalListeners += parseInt(source.listeners);
+          totalListeners += parseInt(source.listeners as string, 10);
         }
         if (source.bitrate) {
-          totalBitrate += parseInt(source.bitrate);
+          totalBitrate += parseInt(source.bitrate as string, 10);
           hasBitrate = true;
         }
       });

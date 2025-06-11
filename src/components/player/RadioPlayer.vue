@@ -11,7 +11,7 @@ import BaseButton from '../common/BaseButton.vue';
 const { 
   isPlaying, 
   isLoading, 
-  volume, 
+  // volume, 
   isMuted, 
   formattedVolume, 
   currentTrack, 
