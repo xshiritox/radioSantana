@@ -32,11 +32,13 @@ const handleVolumeChange = (event: Event) => {
     <!-- Player Header -->
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center space-x-3">
-        <div class="w-12 h-12 bg-gold-gradient rounded-full flex items-center justify-center animate-pulse-slow">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center animate-pulse-slow" style="background-image: linear-gradient(135deg, #FFD700 0%, #DAA520 50%, #B8860B 100%);">
           <span class="text-xl font-bold">📻</span>
         </div>
         <div>
-          <h3 class="text-xl font-bold text-white">RadioOnline Santana</h3>
+          <h3 class="text-2xl font-bold text-white">
+            RadioOnline Santana
+          </h3>
           <div class="flex items-center space-x-2 mt-2">
             <div class="flex items-center space-x-1">
               <span class="text-gold-400">🎧</span>

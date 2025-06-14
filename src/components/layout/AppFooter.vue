@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 const socialLinks = [
   { name: 'Facebook', url: 'https://www.facebook.com/share/16ap34GVi9/', icon: '📘' },
   { name: 'Instagram', url: '#', icon: '📷' },
   { name: 'Twitter', url: 'https://x.com/NMradio_santana', icon: '🐦' },
   { name: 'YouTube', url: 'https://www.youtube.com/@SantanaRadioOnline', icon: '📺' },
-  { name: 'WhatsApp', url: 'https://wa.me/+57310603584?text=Hola vengo desde RadioOnline Santana', icon: '💬' }
+  { name: 'WhatsApp', url: 'https://wa.me/+57 310 603584?text=Hola vengo desde RadioOnline Santana', icon: '💬' }
 ];
 
 const contactInfo = {
@@ -25,7 +26,7 @@ const contactInfo = {
             <div class="w-10 h-10 bg-gold-gradient rounded-full flex items-center justify-center">
               <span class="text-xl font-bold">📻</span>
             </div>
-            <h3 class="text-xl font-bold bg-gold-gradient bg-clip-text text-transparent">
+            <h3 class="text-xl font-bold text-white">
               RadioOnline Santana
             </h3>
           </div>
@@ -129,4 +130,6 @@ const contactInfo = {
       </div>
     </div>
   </footer>
+
+
 </template>

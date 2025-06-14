@@ -3,6 +3,11 @@ import { ref } from 'vue';
 import { NewspaperIcon, CalendarIcon, UserIcon } from '@heroicons/vue/24/outline';
 import type { NewsItem } from '../../types/radio';
 
+// Importar imágenes
+import new1 from '../../assets/new1.jpg';
+import new3 from '../../assets/new3.jpg';
+import new4 from '../../assets/new4.jpg';
+
 const news = ref<NewsItem[]>([
   {
     id: '1',
@@ -11,7 +16,7 @@ const news = ref<NewsItem[]>([
     author: 'Equipo RadioOnline Santana',
     publishedAt: new Date('2025-06-11'), // Hoy
     category: 'Radio',
-    imageUrl: 'https://images.pexels.com/photos/3784221/pexels-photo-3784221.jpeg?auto=compress&cs=tinysrgb&w=400'
+    imageUrl: new1
   },
   {
     id: '3',
@@ -20,7 +25,7 @@ const news = ref<NewsItem[]>([
     author: 'Equipo RadioOnline Santana',
     publishedAt: new Date('22025-06-10'), // Hoy
     category: 'Tecnología',
-    imageUrl: 'https://www.alchilepoblano.com/wp-content/uploads/2022/06/Equipamiento-03.jpg'
+    imageUrl: new3
   },
   {
     id: '4',
@@ -29,7 +34,7 @@ const news = ref<NewsItem[]>([
     author: 'Equipo RadioOnline Santana',
     publishedAt: new Date('2025-06-11'), // Hoy
     category: 'Tecnología',
-    imageUrl: 'https://www.presteamshop.com/blog/wp-content/uploads/2020/08/mejores-modulos-de-chat-online-para-tu-tienda-en-prestashop.png'
+    imageUrl: new4
   }
 ]);
 

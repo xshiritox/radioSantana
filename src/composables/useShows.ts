@@ -1,6 +1,11 @@
 import { ref } from 'vue';
 import type { Show } from '../types/radio';
 
+// Importar imágenes
+import new1 from '../assets/new1.jpg';
+import pro2 from '../assets/pro2.jpg';
+import pro3 from '../assets/pro3.jpg';
+
 export function useShows() {
   const shows = ref<Show[]>([
     {
@@ -12,7 +17,7 @@ export function useShows() {
       endTime: '12:00',
       days: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
       isLive: false,
-      imageUrl: 'https://images.pexels.com/photos/3784221/pexels-photo-3784221.jpeg?auto=compress&cs=tinysrgb&w=300'
+      imageUrl: new1
     },
     {
       id: '2',
@@ -23,7 +28,7 @@ export function useShows() {
       endTime: '18:00',
       days: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
       isLive: true,
-      imageUrl: 'https://indiehoy.com/wp-content/uploads/2023/05/disco-min.jpg'
+      imageUrl: pro2
     },
     {
       id: '3',
@@ -34,7 +39,7 @@ export function useShows() {
       endTime: '2:00',
       days: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
       isLive: false,
-      imageUrl: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=300'
+      imageUrl: pro3
     }
   ]);
 

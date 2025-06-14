@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@emailjs/browser':
+        specifier: ^4.4.1
+        version: 4.4.1
       '@heroicons/vue':
         specifier: ^2.0.18
         version: 2.2.0(vue@3.5.16(typescript@5.8.3))
+      '@types/vue-router':
+        specifier: ^2.0.0
+        version: 2.0.0(vue@3.5.16(typescript@5.8.3))
       '@vueuse/core':
         specifier: ^10.5.0
         version: 10.11.1(vue@3.5.16(typescript@5.8.3))
@@ -20,6 +26,9 @@ importers:
       vue:
         specifier: ^3.4.38
         version: 3.5.16(typescript@5.8.3)
+      vue-router:
+        specifier: ^4.5.1
+        version: 4.5.1(vue@3.5.16(typescript@5.8.3))
       vue-toastification:
         specifier: ^2.0.0-rc.5
         version: 2.0.0-rc.5(vue@3.5.16(typescript@5.8.3))
@@ -68,6 +77,10 @@ packages:
   '@babel/types@7.27.6':
     resolution: {integrity: sha512-ETyHEk2VHHvl9b9jZP5IHPavHYk57EhanlRRuae9XCpb/j5bDCbPPMOBfCWhnl/7EDJz0jEMCi/RhccCE8r1+Q==}
     engines: {node: '>=6.9.0'}
+
+  '@emailjs/browser@4.4.1':
+    resolution: {integrity: sha512-DGSlP9sPvyFba3to2A50kDtZ+pXVp/0rhmqs2LmbMS3I5J8FSOgLwzY2Xb4qfKlOVHh29EAutLYwe5yuEZmEFg==}
+    engines: {node: '>=14.0.0'}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -353,6 +366,10 @@ packages:
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
 
+  '@types/vue-router@2.0.0':
+    resolution: {integrity: sha512-E454lQ6tp9ftVWdZ8VGZpRcIV4YeqVAcx/uifl3P1GGwscYsxOFdYfgIuKasKO0Fm6Np2JM/L378D3bcRQE9hg==}
+    deprecated: This is a stub types definition for vue-router (https://github.com/vuejs/vue-router). ecmarkup provides its own type definitions, so you don\'t need @types/ecmarkup installed!
+
   '@types/web-bluetooth@0.0.20':
     resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}
 
@@ -386,6 +403,9 @@ packages:
 
   '@vue/compiler-vue2@2.7.16':
     resolution: {integrity: sha512-qYC3Psj9S/mfu9uVi5WvNZIzq+xnXMhOwbTFKKDD7b1lhpnn71jXSFdTQ+WsIEk0ONCd7VV2IMm7ONl6tbQ86A==}
+
+  '@vue/devtools-api@6.6.4':
+    resolution: {integrity: sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g==}
 
   '@vue/language-core@2.2.10':
     resolution: {integrity: sha512-+yNoYx6XIKuAO8Mqh1vGytu8jkFEOH5C8iOv3i8Z/65A7x9iAOXA97Q+PqZ3nlm2lxf5rOJuIGI/wDtx/riNYw==}
@@ -991,6 +1011,11 @@ packages:
       '@vue/composition-api':
         optional: true
 
+  vue-router@4.5.1:
+    resolution: {integrity: sha512-ogAF3P97NPm8fJsE4by9dwSYtDwXIY1nFY9T6DyQnGHd1E2Da94w9JIolpe42LJGIl0DwOHBi8TcRPlPGwbTtw==}
+    peerDependencies:
+      vue: ^3.2.0
+
   vue-toastification@2.0.0-rc.5:
     resolution: {integrity: sha512-q73e5jy6gucEO/U+P48hqX+/qyXDozAGmaGgLFm5tXX4wJBcVsnGp4e/iJqlm9xzHETYOilUuwOUje2Qg1JdwA==}
     peerDependencies:
@@ -1044,6 +1069,8 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
+
+  '@emailjs/browser@4.4.1': {}
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
@@ -1221,6 +1248,12 @@ snapshots:
 
   '@types/estree@1.0.7': {}
 
+  '@types/vue-router@2.0.0(vue@3.5.16(typescript@5.8.3))':
+    dependencies:
+      vue-router: 4.5.1(vue@3.5.16(typescript@5.8.3))
+    transitivePeerDependencies:
+      - vue
+
   '@types/web-bluetooth@0.0.20': {}
 
   '@vitejs/plugin-vue@5.2.4(vite@5.4.19)(vue@3.5.16(typescript@5.8.3))':
@@ -1274,6 +1307,8 @@ snapshots:
     dependencies:
       de-indent: 1.0.2
       he: 1.2.0
+
+  '@vue/devtools-api@6.6.4': {}
 
   '@vue/language-core@2.2.10(typescript@5.8.3)':
     dependencies:
@@ -1882,6 +1917,11 @@ snapshots:
 
   vue-demi@0.14.10(vue@3.5.16(typescript@5.8.3)):
     dependencies:
+      vue: 3.5.16(typescript@5.8.3)
+
+  vue-router@4.5.1(vue@3.5.16(typescript@5.8.3)):
+    dependencies:
+      '@vue/devtools-api': 6.6.4
       vue: 3.5.16(typescript@5.8.3)
 
   vue-toastification@2.0.0-rc.5(vue@3.5.16(typescript@5.8.3)):

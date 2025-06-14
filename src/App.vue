@@ -3,9 +3,11 @@ import { onMounted } from 'vue';
 import AppHeader from './components/layout/AppHeader.vue';
 import AppFooter from './components/layout/AppFooter.vue';
 import HeroSection from './components/hero/HeroSection.vue';
+import ContactForm from './components/contact/ContactForm.vue';
 import RadioPlayer from './components/player/RadioPlayer.vue';
 import ShowSchedule from './components/shows/ShowSchedule.vue';
 import LiveChat from './components/chat/LiveChat.vue';
+import LoginPanel from './components/auth/LoginPanel.vue';
 import MusicRequests from './components/requests/MusicRequests.vue';
 import NewsSection from './components/news/NewsSection.vue';
 
@@ -49,7 +51,7 @@ onMounted(() => {
         <div class="container mx-auto max-w-6xl">
           <div class="text-center mb-12">
             <h2 class="text-4xl md:text-5xl font-bold mb-4">
-              <span class="bg-gold-gradient bg-clip-text text-transparent">Programación</span>
+              <span class="bg-gradient-to-r from-gold-400 via-gold-300 to-gold-400 bg-clip-text text-transparent">Programación</span>
             </h2>
             <p class="text-xl text-silver-300">Conoce nuestros programas y horarios</p>
           </div>
@@ -62,15 +64,16 @@ onMounted(() => {
         <div class="container mx-auto max-w-7xl">
           <div class="text-center mb-12">
             <h2 class="text-4xl md:text-5xl font-bold mb-4">
-              <span class="bg-gold-gradient bg-clip-text text-transparent">Interactúa</span>
+              <span class="bg-gradient-to-r from-gold-400 via-gold-300 to-gold-400 bg-clip-text text-transparent">Interactúa</span>
             </h2>
             <p class="text-xl text-silver-300">Chatea y pide tu música favorita</p>
           </div>
           
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Chat Section -->
-            <div id="chat">
+            <div id="chat" class="space-y-4">
               <LiveChat />
+              <LoginPanel />
             </div>
             
             <!-- Music Requests Section -->
@@ -86,7 +89,7 @@ onMounted(() => {
         <div class="container mx-auto max-w-6xl">
           <div class="text-center mb-12">
             <h2 class="text-4xl md:text-5xl font-bold mb-4">
-              <span class="bg-gold-gradient bg-clip-text text-transparent">Noticias</span>
+              <span class="bg-gradient-to-r from-gold-400 via-gold-300 to-gold-400 bg-clip-text text-transparent">Noticias</span>
             </h2>
             <p class="text-xl text-silver-300">Mantente al día con las últimas novedades</p>
           </div>
@@ -99,7 +102,7 @@ onMounted(() => {
         <div class="container mx-auto max-w-4xl">
           <div class="text-center mb-12">
             <h2 class="text-4xl md:text-5xl font-bold mb-4">
-              <span class="bg-gold-gradient bg-clip-text text-transparent">Contacto</span>
+              <span class="bg-gradient-to-r from-gold-400 via-gold-300 to-gold-400 bg-clip-text text-transparent">Contacto</span>
             </h2>
             <p class="text-xl text-silver-300">Ponte en contacto con nosotros</p>
           </div>
@@ -108,7 +111,9 @@ onMounted(() => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
               <!-- Contact Info -->
               <div class="space-y-6">
-                <h3 class="text-2xl font-bold text-white mb-6">Información de Contacto</h3>
+                <h3 class="text-2xl font-bold mb-6">
+                <span class="bg-gradient-to-r from-gold-400 via-gold-300 to-gold-400 bg-clip-text text-transparent">Información de Contacto</span>
+              </h3>
                 
                 <div class="space-y-4">
                   <div class="flex items-center space-x-3">
@@ -145,36 +150,7 @@ onMounted(() => {
               
               <!-- Contact Form -->
               <div>
-                <h3 class="text-2xl font-bold text-white mb-6">Envíanos un Mensaje</h3>
-                <form class="space-y-4">
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Tu nombre"
-                      class="w-full px-4 py-3 bg-silver-800 border border-silver-600 rounded-lg text-white placeholder-silver-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="email"
-                      placeholder="Tu email"
-                      class="w-full px-4 py-3 bg-silver-800 border border-silver-600 rounded-lg text-white placeholder-silver-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <textarea
-                      rows="4"
-                      placeholder="Tu mensaje"
-                      class="w-full px-4 py-3 bg-silver-800 border border-silver-600 rounded-lg text-white placeholder-silver-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent resize-none"
-                    ></textarea>
-                  </div>
-                  <button
-                    type="submit"
-                    class="w-full px-6 py-3 bg-gold-gradient text-white font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-200"
-                  >
-                    Enviar Mensaje
-                  </button>
-                </form>
+                <ContactForm />
               </div>
             </div>
           </div>
@@ -194,5 +170,9 @@ html {
 
 * {
   box-sizing: border-box;
+}
+
+.bg-gold-gradient {
+  background: linear-gradient(45deg, #FFD700, #FFA500);
 }
 </style>
