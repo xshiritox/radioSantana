@@ -1,5 +1,6 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import type { Track, RadioStats } from '../types/radio';
+import radioSong from '../assets/RadioSantana.mp3';
 
 export function useRadioPlayer() {
   const audio = ref<HTMLAudioElement | null>(null);
@@ -15,16 +16,16 @@ export function useRadioPlayer() {
     website: 'radiosantana.nm@gmail.com'
   });
 
-  // Stream URL - Replace with your actual stream URL
-  const streamUrl = ref('http://localhost:8000/stream');
-  const statsUrl = ref('http://localhost:8000/status-json.xsl'); // URL para obtener estadísticas
+  // Usar el archivo local de música
+  const streamUrl = ref(radioSong);
 
   const formattedVolume = computed(() => Math.round(volume.value * 100));
 
   const initializePlayer = () => {
     audio.value = new Audio();
     audio.value.crossOrigin = 'anonymous';
-    audio.value.preload = 'none';
+    audio.value.preload = 'auto';
+    audio.value.loop = true; // Hacer que el audio se repita en bucle
     audio.value.volume = volume.value;
 
     audio.value.addEventListener('loadstart', () => {
@@ -51,10 +52,25 @@ export function useRadioPlayer() {
   };
 
   onMounted(() => {
-    // Iniciar la actualización periódica de estadísticas cuando el componente se monte
-    fetchIcecastStats();
-    const interval = setInterval(fetchIcecastStats, 5000); // Actualizar cada 5 segundos
-    onUnmounted(() => clearInterval(interval));
+    // Configurar una pista de ejemplo para mostrar en el reproductor
+    currentTrack.value = {
+      id: '1',
+      title: 'Radio Santana',
+      artist: 'En Vivo',
+      album: 'Radio Online',
+      duration: 0,
+      isPlaying: false,
+      startTime: new Date(),
+      coverUrl: 'https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=300&h=300&fit=crop&crop=faces'
+    };
+    
+    // Actualizar estadísticas simuladas
+    radioStats.value = {
+      listeners: 1,
+      bitrate: '128 kbps',
+      genre: 'Variado',
+      website: 'radiosantana.nm@gmail.com'
+    };
   });
 
   const play = async () => {
@@ -62,7 +78,10 @@ export function useRadioPlayer() {
     
     try {
       isLoading.value = true;
-      audio.value.src = streamUrl.value;
+      // Solo establecer el src si no está ya establecido
+      if (!audio.value.src || audio.value.src !== streamUrl.value) {
+        audio.value.src = streamUrl.value;
+      }
       await audio.value.play();
     } catch (error) {
       console.error('Error playing audio:', error);
@@ -98,75 +117,11 @@ export function useRadioPlayer() {
     }
   };
 
-  // Función para obtener estadísticas de Icecast
-  const fetchIcecastStats = async () => {
-    try {
-      // Intentar obtener las estadísticas usando fetch
-      const response = await fetch(statsUrl.value, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
 
-      if (!response.ok) {
-        console.error('Error en la respuesta:', response.status);
-        return;
-      }
-
-      const data = await response.json();
-      console.log('Datos recibidos:', data);
-
-      // Asegurarse de que el objeto existe
-      if (!data || !data.icestats || !data.icestats.source) {
-        console.error('Formato de datos incorrecto');
-        return;
-      }
-
-      // Buscar todas las fuentes (mountpoints)
-      const sources = Array.isArray(data.icestats.source) 
-        ? data.icestats.source 
-        : [data.icestats.source];
-
-      // Sumar oyentes de todos los mountpoints
-      let totalListeners = 0;
-      let totalBitrate = 0;
-      let hasBitrate = false;
-
-      interface IcecastSource {
-        listeners?: string | number;
-        bitrate?: string | number;
-        [key: string]: any;
-      }
-
-      const sourcesTyped: IcecastSource[] = sources as IcecastSource[];
-
-      sourcesTyped.forEach((source: IcecastSource) => {
-        if (source.listeners) {
-          totalListeners += parseInt(source.listeners as string, 10);
-        }
-        if (source.bitrate) {
-          totalBitrate += parseInt(source.bitrate as string, 10);
-          hasBitrate = true;
-        }
-      });
-
-      // Actualizar las estadísticas
-      radioStats.value.listeners = totalListeners;
-      radioStats.value.bitrate = hasBitrate ? `${totalBitrate} kbps` : '?';
-      radioStats.value.genre = 'Variado'; // Puedes ajustar esto según tus necesidades
-
-      console.log('Total oyentes:', totalListeners);
-
-    } catch (error) {
-      console.error('Error fetching Icecast stats:', error);
-      // Si hay error, mantener los valores anteriores
-    }
-  };
 
   // Simulate current track updates (replace with real API calls)
   const updateCurrentTrack = () => {
-    // This would typically fetch from your radio automation software API
+    // No necesitamos actualizar la pista actual para el archivo local
     currentTrack.value = {
       id: Date.now().toString(),
       title: 'Canción:',
