@@ -4,7 +4,7 @@ const socialLinks = [
   { name: 'Instagram', url: '#', icon: '📷' },
   { name: 'Twitter', url: 'https://x.com/NMradio_santana', icon: '🐦' },
   { name: 'YouTube', url: 'https://www.youtube.com/@SantanaRadioOnline', icon: '📺' },
-  { name: 'WhatsApp', url: 'https://wa.me/+573106035384?text=(RadioSantana)', icon: '💬' }
+  { name: 'WhatsApp', url: 'https://wa.me/573106035384?text=Hola%20vengo%20desde%20Radio%20Santana', icon: '💬' }
 ];
 
 const contactInfo = {
