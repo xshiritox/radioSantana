@@ -14,6 +14,7 @@
     "@types/vue-router": "^2.0.0",
     "@vueuse/core": "^10.5.0",
     "axios": "^1.9.0",
+    "firebase": "^10.7.1",
     "vue": "^3.4.38",
     "vue-router": "^4.5.1",
     "vue-toastification": "^2.0.0-rc.5"

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { MusicalNoteIcon, HeartIcon } from '@heroicons/vue/24/outline';
+import { MusicalNoteIcon, HeartIcon, ExclamationTriangleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline';
 import BaseButton from '../common/BaseButton.vue';
-import type { MusicRequest } from '../../types/radio';
+import { useMusicRequests } from '../../composables/useMusicRequests';
 
-const requests = ref<MusicRequest[]>([]); // Lista vacía para nuevas peticiones
+const { requests, isLoading, error, submitRequest } = useMusicRequests();
 
 const newRequest = ref({
   track: '',
@@ -13,34 +13,39 @@ const newRequest = ref({
   message: ''
 });
 
+const showSuccessMessage = ref(false);
+
 const isFormValid = computed(() => {
   return newRequest.value.track.trim() && 
          newRequest.value.artist.trim() && 
          newRequest.value.requester.trim();
 });
 
-const submitRequest = () => {
-  if (!isFormValid.value) return;
+const handleSubmitRequest = async () => {
+  if (!isFormValid.value || isLoading.value) return;
 
-  const request: MusicRequest = {
-    id: Date.now().toString(),
-    track: newRequest.value.track.trim(),
-    artist: newRequest.value.artist.trim(),
-    requester: newRequest.value.requester.trim(),
-    message: newRequest.value.message.trim() || undefined,
-    timestamp: new Date(),
-    status: 'pending'
-  };
+  const success = await submitRequest(
+    newRequest.value.track,
+    newRequest.value.artist,
+    newRequest.value.requester,
+    newRequest.value.message
+  );
 
-  requests.value.unshift(request);
-  
-  // Reset form
-  newRequest.value = {
-    track: '',
-    artist: '',
-    requester: '',
-    message: ''
-  };
+  if (success) {
+    // Reset form
+    newRequest.value = {
+      track: '',
+      artist: '',
+      requester: '',
+      message: ''
+    };
+    
+    // Show success message
+    showSuccessMessage.value = true;
+    setTimeout(() => {
+      showSuccessMessage.value = false;
+    }, 3000);
+  }
 };
 
 const getStatusColor = (status: string) => {
@@ -89,7 +94,19 @@ const formatTimeAgo = (date: Date) => {
         </div>
       </div>
 
-      <form @submit.prevent="submitRequest" class="space-y-4">
+      <!-- Error Message -->
+      <div v-if="error" class="bg-red-600 text-white p-3 rounded-lg mb-4 flex items-center space-x-2">
+        <ExclamationTriangleIcon class="h-5 w-5" />
+        <span class="text-sm">{{ error }}</span>
+      </div>
+
+      <!-- Success Message -->
+      <div v-if="showSuccessMessage" class="bg-green-600 text-white p-3 rounded-lg mb-4 flex items-center space-x-2">
+        <CheckCircleIcon class="h-5 w-5" />
+        <span class="text-sm">¡Petición enviada exitosamente!</span>
+      </div>
+
+      <form @submit.prevent="handleSubmitRequest" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-silver-300 mb-2">
@@ -101,6 +118,7 @@ const formatTimeAgo = (date: Date) => {
               required
               placeholder="Nombre de la canción"
               class="w-full px-4 py-3 bg-silver-800 border border-silver-600 rounded-lg text-white placeholder-silver-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all duration-200"
+              :disabled="isLoading"
             />
           </div>
           <div>
@@ -113,6 +131,7 @@ const formatTimeAgo = (date: Date) => {
               required
               placeholder="Nombre del artista"
               class="w-full px-4 py-3 bg-silver-800 border border-silver-600 rounded-lg text-white placeholder-silver-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all duration-200"
+              :disabled="isLoading"
             />
           </div>
         </div>
@@ -127,6 +146,7 @@ const formatTimeAgo = (date: Date) => {
             required
             placeholder="¿Cómo te llamas?"
             class="w-full px-4 py-3 bg-silver-800 border border-silver-600 rounded-lg text-white placeholder-silver-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all duration-200"
+            :disabled="isLoading"
           />
         </div>
 
@@ -139,6 +159,7 @@ const formatTimeAgo = (date: Date) => {
             rows="3"
             placeholder="¿Algún mensaje especial?"
             class="w-full px-4 py-3 bg-silver-800 border border-silver-600 rounded-lg text-white placeholder-silver-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all duration-200 resize-none"
+            :disabled="isLoading"
           ></textarea>
         </div>
 
@@ -146,6 +167,7 @@ const formatTimeAgo = (date: Date) => {
           type="submit" 
           variant="primary" 
           size="lg"
+          :loading="isLoading"
           :disabled="!isFormValid"
           class="w-full"
         >
@@ -163,6 +185,19 @@ const formatTimeAgo = (date: Date) => {
       </h3>
 
       <div class="space-y-4">
+        <!-- Loading state -->
+        <div v-if="isLoading && requests.length === 0" class="text-center py-8">
+          <div class="animate-spin w-8 h-8 border-2 border-gold-500 border-t-transparent rounded-full mx-auto"></div>
+          <p class="text-silver-400 text-sm mt-2">Cargando peticiones...</p>
+        </div>
+
+        <!-- Empty state -->
+        <div v-else-if="requests.length === 0" class="text-center py-8">
+          <MusicalNoteIcon class="h-16 w-16 text-silver-400 mx-auto mb-4" />
+          <p class="text-silver-400">¡Sé el primero en pedir una canción!</p>
+        </div>
+
+        <!-- Requests list -->
         <div
           v-for="request in requests"
           :key="request.id"

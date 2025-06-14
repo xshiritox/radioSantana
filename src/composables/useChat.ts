@@ -1,4 +1,5 @@
-import { ref, nextTick } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { chatService } from '../services/chatService';
 import type { ChatMessage } from '../types/radio';
 
 export function useChat() {
@@ -6,97 +7,90 @@ export function useChat() {
   const isConnected = ref(false);
   const username = ref('');
   const isLoggedIn = ref(false);
+  const isLoading = ref(false);
+  const error = ref<string | null>(null);
+  
+  let unsubscribe: (() => void) | null = null;
 
-  const addMessage = (message: Omit<ChatMessage, 'id' | 'timestamp'>) => {
-    const newMessage: ChatMessage = {
-      ...message,
-      id: Date.now().toString(),
-      timestamp: new Date()
-    };
-    
-    messages.value.push(newMessage);
-    
-    // Keep only last 100 messages
-    if (messages.value.length > 100) {
-      messages.value = messages.value.slice(-100);
+  const sendMessage = async (content: string) => {
+    if (!content.trim() || !isLoggedIn.value || !username.value) {
+      return;
     }
     
-    // Auto scroll to bottom
-    nextTick(() => {
-      const chatContainer = document.getElementById('chat-messages');
-      if (chatContainer) {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }
-    });
+    try {
+      isLoading.value = true;
+      error.value = null;
+      await chatService.sendMessage(username.value, content.trim());
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Error al enviar mensaje';
+      console.error('Error sending message:', err);
+    } finally {
+      isLoading.value = false;
+    }
   };
 
-  const sendMessage = (content: string) => {
-    if (!content.trim() || !isLoggedIn.value) return;
-    
-    addMessage({
-      username: username.value,
-      message: content.trim(),
-      type: 'user'
-    });
-  };
-
-  const login = (name: string) => {
+  const login = async (name: string): Promise<boolean> => {
     if (!name.trim()) return false;
     
-    username.value = name.trim();
-    isLoggedIn.value = true;
-    isConnected.value = true;
-    
-    // Add welcome message
-    addMessage({
-      username: 'Sistema',
-      message: `¡Bienvenido ${username.value} a RadioOnline Santana!`,
-      type: 'system'
-    });
-    
-    return true;
+    try {
+      username.value = name.trim();
+      isLoggedIn.value = true;
+      isConnected.value = true;
+      
+      // Enviar mensaje de bienvenida
+      await chatService.sendSystemMessage(`¡${username.value} se ha unido al chat!`);
+      
+      return true;
+    } catch (err) {
+      error.value = 'Error al conectar al chat';
+      console.error('Error logging in:', err);
+      return false;
+    }
   };
 
   const logout = () => {
+    if (unsubscribe) {
+      unsubscribe();
+      unsubscribe = null;
+    }
+    
     isLoggedIn.value = false;
     isConnected.value = false;
     username.value = '';
+    messages.value = [];
+    error.value = null;
   };
 
-  // Simulate some activity
-  const simulateActivity = () => {
-    const sampleMessages = [
-      { username: 'DJ-Santana', message: '¡Gracias por sintonizarnos!', type: 'dj' as const },
-      { username: 'Público', message: 'Excelente música', type: 'user' as const },
-      { username: 'MusicLover', message: 'Más música!', type: 'user' as const },
-      { username: 'Sistema', message: 'Nuevos oyentes conectados', type: 'system' as const }
-    ];
-
-    setInterval(() => {
-      if (Math.random() > 0.7) {
-        const randomMessage = sampleMessages[Math.floor(Math.random() * sampleMessages.length)];
-        addMessage(randomMessage);
-      }
-    }, 15000);
-  };
-
-  // Initialize with some sample messages
   const initializeChat = () => {
-    addMessage({
-      username: 'Sistema',
-      message: 'Bienvenidos al chat de RadioOnline Santana',
-      type: 'system'
-    });
-    
-    simulateActivity();
+    try {
+      // Suscribirse a los mensajes en tiempo real
+      unsubscribe = chatService.subscribeToMessages((newMessages) => {
+        messages.value = newMessages;
+        isConnected.value = true;
+      });
+    } catch (err) {
+      error.value = 'Error al conectar con el chat';
+      console.error('Error initializing chat:', err);
+    }
   };
+
+  onMounted(() => {
+    initializeChat();
+  });
+
+  onUnmounted(() => {
+    if (unsubscribe) {
+      unsubscribe();
+    }
+  });
 
   return {
     messages,
     isConnected,
     username,
     isLoggedIn,
-    addMessage,
+    isLoading,
+    error,
     sendMessage,
     login,
     logout,
