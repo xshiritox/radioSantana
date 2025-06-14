@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 const socialLinks = [
   { name: 'Facebook', url: 'https://www.facebook.com/share/16ap34GVi9/', icon: '📘' },
   { name: 'Instagram', url: '#', icon: '📷' },

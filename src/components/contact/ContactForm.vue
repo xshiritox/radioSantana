@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { emailjsSend } from '@/utils/emailjs'
+import { emailjsSend } from '../../utils/emailjs'
 
 const name = ref('')
 const email = ref('')
@@ -29,14 +29,14 @@ const handleSubmit = async (e: Event) => {
     
     console.log('Respuesta del servidor:', response)
     
-    if (response.status === 200) {
+    if (response.status >= 200 && response.status < 300) {
       successMessage.value = '¡Mensaje enviado exitosamente!'
       name.value = ''
       email.value = ''
       message.value = ''
     } else {
       console.error('Error en la respuesta:', response)
-      alert(`Error del servidor: ${response.statusText || 'Por favor intenta de nuevo.'}`)
+      alert(`Error del servidor: ${response.text || 'Por favor intenta de nuevo.'}`)
     }
   } catch (error: any) {
     console.error('Error detallado:', {

@@ -71,35 +71,48 @@ export const emailjsSend = async (data: EmailData): Promise<EmailResponse> => {
     console.log('📤 Enviando correo de confirmación a:', data.email);
 
     // 3. Enviar ambos correos en paralelo
-    const [adminResponse, userResponse] = await Promise.all([
-      emailjs.send(
-        CONFIG.SERVICE_ID,
-        CONFIG.TEMPLATE_ID,
-        adminParams,
-        CONFIG.USER_ID
-      ),
-      emailjs.send(
-        CONFIG.SERVICE_ID,
-        CONFIG.TEMPLATE_ID,
-        userParams,
-        CONFIG.USER_ID
-      )
-    ]);
+    try {
+      await Promise.all([
+        emailjs.send(
+          CONFIG.SERVICE_ID,
+          CONFIG.TEMPLATE_ID,
+          adminParams,
+          CONFIG.USER_ID
+        ),
+        emailjs.send(
+          CONFIG.SERVICE_ID,
+          CONFIG.TEMPLATE_ID,
+          userParams,
+          CONFIG.USER_ID
+        )
+      ]);
 
-    console.log('✅ Correos enviados exitosamente:', {
-      admin: { status: adminResponse.status },
-      user: { status: userResponse.status }
-    });
+      console.log('✅ Correos enviados exitosamente:', {
+        admin: { status: 200 },
+        user: { status: 200 }
+      });
 
-    // Devolvemos la respuesta del correo al administrador como respuesta principal
-    return {
-      status: adminResponse.status,
-      text: 'Mensaje enviado correctamente',
-      details: {
-        adminEmail: adminResponse.status === 200 ? 'Enviado' : 'Error',
-        userEmail: userResponse.status === 200 ? 'Enviado' : 'Error'
-      }
-    };
+      // Devolvemos la respuesta exitosa
+      return {
+        status: 200,
+        text: 'Mensaje enviado correctamente',
+        details: {
+          adminEmail: 'Enviado',
+          userEmail: 'Enviado'
+        }
+      };
+    } catch (error) {
+      console.error('❌ Error al enviar correos:', error);
+      // Si hay un error, asumimos que al menos uno de los correos falló
+      return {
+        status: 500,
+        text: 'Error al enviar el mensaje. Por favor intenta de nuevo.',
+        details: {
+          adminEmail: 'Error',
+          userEmail: 'Error'
+        }
+      };
+    }
     
   } catch (error: any) {
     console.error('❌ ERROR DETALLADO:', {
