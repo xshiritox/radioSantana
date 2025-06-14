@@ -19,7 +19,13 @@ const handleSubmit = async (e: Event) => {
 
   try {
     isLoading.value = true
-    console.log('Enviando datos:', { name: name.value, email: email.value, message: message.value })
+    successMessage.value = ''
+    
+    console.log('Enviando datos:', { 
+      name: name.value, 
+      email: email.value, 
+      message: message.value 
+    })
     
     const response = await emailjsSend({
       name: name.value,
@@ -29,27 +35,25 @@ const handleSubmit = async (e: Event) => {
     
     console.log('Respuesta del servidor:', response)
     
-    if (response.status >= 200 && response.status < 300) {
-      successMessage.value = '¡Mensaje enviado exitosamente!'
+    // Si llegamos aquí, el correo al administrador se envió correctamente
+    successMessage.value = '¡Mensaje enviado exitosamente!'
+    name.value = ''
+    email.value = ''
+    message.value = ''
+    
+    // No mostramos error si solo falló el correo de confirmación
+  } catch (error: any) {
+    console.error('Error en el envío:', error)
+    
+    // Si el error es porque el correo de confirmación falló pero el principal se envió
+    if (error?.message?.includes('solo falló la confirmación')) {
+      successMessage.value = '¡Mensaje enviado! (Nota: No se pudo enviar la confirmación automática)'
       name.value = ''
       email.value = ''
       message.value = ''
     } else {
-      console.error('Error en la respuesta:', response)
-      alert(`Error del servidor: ${response.text || 'Por favor intenta de nuevo.'}`)
-    }
-  } catch (error: any) {
-    console.error('Error detallado:', {
-      error: error,
-      message: error?.message,
-      stack: error?.stack,
-      name: error?.name
-    })
-    
-    if (error instanceof Error) {
-      alert(`Error: ${error.message}`)
-    } else {
-      alert('Error al enviar el mensaje. Por favor intenta de nuevo.')
+      // Para otros errores, mostramos mensaje de error
+      alert('Hubo un problema al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.')
     }
   } finally {
     isLoading.value = false
