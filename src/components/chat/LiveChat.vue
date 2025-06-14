@@ -1,33 +1,37 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, nextTick, watch } from 'vue';
 import { useChat } from '../../composables/useChat';
-import { PaperAirplaneIcon, UserIcon } from '@heroicons/vue/24/outline';
+import { PaperAirplaneIcon, UserIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import BaseButton from '../common/BaseButton.vue';
 
 const { 
   messages, 
   isLoggedIn, 
   username, 
+  isLoading,
+  error,
   sendMessage, 
   login, 
-  logout, 
-  initializeChat 
+  logout
 } = useChat();
 
 const newMessage = ref('');
 const loginName = ref('');
+const chatContainer = ref<HTMLElement>();
 
-const handleSendMessage = () => {
-  if (newMessage.value.trim()) {
-    sendMessage(newMessage.value);
+const handleSendMessage = async () => {
+  if (newMessage.value.trim() && !isLoading.value) {
+    await sendMessage(newMessage.value);
     newMessage.value = '';
   }
 };
 
-const handleLogin = () => {
+const handleLogin = async () => {
   if (loginName.value.trim()) {
-    login(loginName.value);
-    loginName.value = '';
+    const success = await login(loginName.value);
+    if (success) {
+      loginName.value = '';
+    }
   }
 };
 
@@ -49,9 +53,14 @@ const getMessageTypeClass = (type: string) => {
   }
 };
 
-onMounted(() => {
-  initializeChat();
-});
+// Auto scroll to bottom when new messages arrive
+watch(messages, () => {
+  nextTick(() => {
+    if (chatContainer.value) {
+      chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+    }
+  });
+}, { deep: true });
 </script>
 
 <template>
@@ -80,6 +89,12 @@ onMounted(() => {
       </div>
     </div>
 
+    <!-- Error Message -->
+    <div v-if="error" class="bg-red-600 text-white p-3 flex items-center space-x-2">
+      <ExclamationTriangleIcon class="h-5 w-5" />
+      <span class="text-sm">{{ error }}</span>
+    </div>
+
     <!-- Login Form (if not logged in) -->
     <div v-if="!isLoggedIn" class="p-6">
       <div class="text-center space-y-4">
@@ -95,8 +110,14 @@ onMounted(() => {
             placeholder="Tu nombre..."
             class="flex-1 px-4 py-2 bg-silver-800 border border-silver-600 rounded-lg text-white placeholder-silver-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent"
             maxlength="20"
+            :disabled="isLoading"
           />
-          <BaseButton @click="handleLogin" variant="primary">
+          <BaseButton 
+            @click="handleLogin" 
+            variant="primary"
+            :loading="isLoading"
+            :disabled="!loginName.trim()"
+          >
             Entrar
           </BaseButton>
         </div>
@@ -107,7 +128,7 @@ onMounted(() => {
     <div v-else class="flex flex-col h-96">
       <!-- Messages Area -->
       <div 
-        id="chat-messages"
+        ref="chatContainer"
         class="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-silver-600 scrollbar-track-silver-800"
       >
         <div
@@ -130,6 +151,17 @@ onMounted(() => {
             {{ message.message }}
           </p>
         </div>
+
+        <!-- Loading indicator -->
+        <div v-if="isLoading && messages.length === 0" class="text-center py-4">
+          <div class="animate-spin w-6 h-6 border-2 border-gold-500 border-t-transparent rounded-full mx-auto"></div>
+          <p class="text-silver-400 text-sm mt-2">Cargando mensajes...</p>
+        </div>
+
+        <!-- Empty state -->
+        <div v-if="messages.length === 0 && !isLoading" class="text-center py-8">
+          <p class="text-silver-400">¡Sé el primero en escribir un mensaje!</p>
+        </div>
       </div>
 
       <!-- Message Input -->
@@ -142,11 +174,13 @@ onMounted(() => {
             placeholder="Escribe tu mensaje..."
             class="flex-1 px-4 py-2 bg-silver-800 border border-silver-600 rounded-lg text-white placeholder-silver-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent"
             maxlength="200"
+            :disabled="isLoading"
           />
           <BaseButton 
             @click="handleSendMessage" 
             variant="primary" 
             :icon="true"
+            :loading="isLoading"
             :disabled="!newMessage.trim()"
           >
             <PaperAirplaneIcon class="h-5 w-5" />
