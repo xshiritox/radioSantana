@@ -22,13 +22,19 @@ export function useAuth() {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
+      console.log('Iniciando proceso de login con:', email);
       isLoading.value = true;
       error.value = null;
       
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log('Credenciales válidas, usuario autenticado:', userCredential.user?.email);
       
       // Verificar si es admin
-      if (adminEmails.includes(userCredential.user.email || '')) {
+      const userEmail = userCredential.user?.email || '';
+      console.log('Verificando si el usuario es admin:', userEmail);
+      
+      if (adminEmails.includes(userEmail)) {
+        console.log('Usuario es administrador');
         isAdmin.value = true;
         return true;
       } else {
@@ -72,9 +78,15 @@ export function useAuth() {
   };
 
   onMounted(() => {
+    console.log('Iniciando observador de autenticación');
     onAuthStateChanged(auth, (firebaseUser) => {
+      console.log('Cambio en el estado de autenticación:', firebaseUser?.email);
       user.value = firebaseUser;
-      isAdmin.value = firebaseUser ? adminEmails.includes(firebaseUser.email || '') : false;
+      const isUserAdmin = firebaseUser ? adminEmails.includes(firebaseUser.email || '') : false;
+      console.log('¿Usuario es administrador?', isUserAdmin);
+      isAdmin.value = isUserAdmin;
+    }, (error) => {
+      console.error('Error en el observador de autenticación:', error);
     });
   });
 
