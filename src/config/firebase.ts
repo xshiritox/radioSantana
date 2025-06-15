@@ -1,6 +1,20 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
-import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { initializeApp, type FirebaseApp, getApps, getApp } from 'firebase/app';
+import { 
+  getFirestore, 
+  enableIndexedDbPersistence, 
+  type Firestore,
+  doc, // Used for creating document references
+  onSnapshot,
+  type DocumentSnapshot,
+  type Unsubscribe
+} from 'firebase/firestore';
+import { 
+  getAuth, 
+  setPersistence, 
+  browserLocalPersistence, 
+  type Auth,
+  onAuthStateChanged
+} from 'firebase/auth';
 
 // Configuración de Firebase para producción
 const firebaseConfig = {
@@ -29,14 +43,120 @@ export const AUTH_DOMAINS = {
   FIREBASE: 'radiosantananm-cda61.firebaseapp.com'
 };
 
-// Inicializar Firebase (evitar múltiples inicializaciones)
-const app = !getApps().length ? initializeApp(config) : getApp();
+// Initialize Firebase
+let app: FirebaseApp;
+try {
+  console.log('Initializing Firebase...');
+  app = getApps().length === 0 ? initializeApp(config) : getApp();
+  console.log('Firebase initialized successfully');
+} catch (error) {
+  console.error('Error initializing Firebase:', error);
+  throw error;
+}
 
-// Inicializar Firestore
-export const db = getFirestore(app);
+// Initialize Firestore with improved error handling
+let db: Firestore;
+try {
+  db = getFirestore(app);
+  console.log('Firestore initialized successfully');
+  
+  // Enable offline persistence
+  enableIndexedDbPersistence(db).catch((err) => {
+    if (err.code === 'failed-precondition') {
+      console.warn('Offline persistence can only be enabled in one tab at a time.');
+    } else if (err.code === 'unimplemented') {
+      console.warn('The current browser does not support offline persistence.');
+    }
+  });
+} catch (error) {
+  console.error('Error initializing Firestore:', error);
+  throw error;
+}
 
-// Inicializar Auth
-export const auth = getAuth(app);
+// Initialize Firebase Auth with improved error handling
+let auth: Auth;
+try {
+  auth = getAuth(app);
+  console.log('Firebase Auth initialized successfully');
+  
+  // Configure persistence
+  setPersistence(auth, browserLocalPersistence)
+    .then(() => {
+      console.log('Auth persistence set to LOCAL');
+    })
+    .catch((error) => {
+      console.error('Error setting auth persistence:', error);
+    });
+} catch (error) {
+  console.error('Error initializing Firebase Auth:', error);
+  throw error;
+}
+
+/**
+ * Checks the Firestore connection status
+ * @returns Promise that resolves to true if connected, false otherwise
+ */
+async function checkFirestoreConnection(): Promise<boolean> {
+  try {
+    console.log('Checking Firestore connection...');
+    return await new Promise<boolean>((resolve) => {
+      const timeout = setTimeout(() => {
+        console.warn('Firestore connection check timed out');
+        unsubscribe();
+        resolve(false);
+      }, 5000);
+
+      // Using a minimal document path to check connection
+      const testDoc = doc(db, '.info/serverTime');
+      const unsubscribe: Unsubscribe = onSnapshot(
+        testDoc,
+        (_doc: DocumentSnapshot) => {  // Using _doc to indicate intentionally unused parameter
+          clearTimeout(timeout);
+          unsubscribe();
+          console.log('Firestore connection is active');
+          resolve(true);
+        },
+        (error: Error) => {
+          clearTimeout(timeout);
+          console.error('Firestore connection error:', error);
+          resolve(false);
+        }
+      );
+    });
+  } catch (error) {
+    console.error('Error checking Firestore connection:', error);
+    return false;
+  }
+}
+
+/**
+ * Checks the Auth connection status
+ * @returns Promise that resolves to true if connected, false otherwise
+ */
+function checkAuthConnection(): Promise<boolean> {
+  return new Promise<boolean>((resolve) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      () => {  // Using empty param since we don't need the user object here
+        unsubscribe();
+        console.log('Auth connection is active');
+        resolve(true);
+      },
+      (error: Error) => {
+        console.error('Auth connection error:', error);
+        resolve(false);
+      }
+    );
+  });
+}
+
+export { 
+  app, 
+  db, 
+  auth, 
+  checkFirestoreConnection, 
+  checkAuthConnection 
+};
 
 // Configurar persistencia de autenticación
 setPersistence(auth, browserLocalPersistence).catch((error) => {

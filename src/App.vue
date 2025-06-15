@@ -11,6 +11,7 @@ import LoginPanel from './components/auth/LoginPanel.vue';
 import MusicRequests from './components/requests/MusicRequests.vue';
 import NewsSection from './components/news/NewsSection.vue';
 import AdminPanel from './components/admin/AdminPanel.vue';
+import ConnectivityStatus from './components/ConnectivityStatus.vue';
 
 // Smooth scroll behavior for navigation links
 onMounted(() => {
@@ -164,6 +165,9 @@ onMounted(() => {
 
     <!-- Admin Panel -->
     <AdminPanel />
+    
+    <!-- Connectivity Status -->
+    <ConnectivityStatus />
   </div>
 </template>
 
