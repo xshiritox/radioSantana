@@ -37,7 +37,7 @@ const defaultNews: NewsItem[] = [
     id: '3',
     title: 'Renovación de Equipos Técnicos',
     content: 'Hemos renovado todo nuestro equipo técnico para ofrecerte la mejor calidad de sonido. Ahora transmitimos en alta definición 24/7.',
-    author: 'Equipo RadioVirtual Santana.',
+    author: 'Equipo RadioVirtual Santana',
     publishedAt: new Date('2025-01-10'),
     category: 'Tecnología',
     imageUrl: new3
@@ -46,7 +46,7 @@ const defaultNews: NewsItem[] = [
     id: '4',
     title: 'Nuevo Chat Interactivo',
     content: 'Ya puedes interactuar con otros oyentes y con nuestros DJs a través del nuevo chat en vivo integrado en nuestra página web.',
-    author: 'Equipo RadioVirtual Santana.',
+    author: 'Equipo RadioVirtual Santana',
     publishedAt: new Date('2025-01-11'),
     category: 'Tecnología',
     imageUrl: new4

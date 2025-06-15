@@ -3,8 +3,7 @@ import {
   collection, 
   query, 
   orderBy, 
-  onSnapshot,
-  Timestamp
+  onSnapshot
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Show } from '../types/radio';
