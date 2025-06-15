@@ -22,37 +22,6 @@ const isLoading = ref(false);
 
 let unsubscribe: (() => void) | null = null;
 
-// Noticias por defecto (fallback)
-const defaultNews: NewsItem[] = [
-  {
-    id: '1',
-    title: 'Nueva Programación',
-    content: 'Pronto comenzaremos con nueva programación para ti.',
-    author: 'Equipo RadioVirtual Santana',
-    publishedAt: new Date('2025-01-11'),
-    category: 'Radio',
-    imageUrl: new1
-  },
-  {
-    id: '3',
-    title: 'Renovación de Equipos Técnicos',
-    content: 'Hemos renovado todo nuestro equipo técnico para ofrecerte la mejor calidad de sonido. Ahora transmitimos en alta definición 24/7.',
-    author: 'Equipo RadioVirtual Santana',
-    publishedAt: new Date('2025-01-10'),
-    category: 'Tecnología',
-    imageUrl: new3
-  },
-  {
-    id: '4',
-    title: 'Nuevo Chat Interactivo',
-    content: 'Ya puedes interactuar con otros oyentes y con nuestros DJs a través del nuevo chat en vivo integrado en nuestra página web.',
-    author: 'Equipo RadioVirtual Santana',
-    publishedAt: new Date('2025-01-11'),
-    category: 'Tecnología',
-    imageUrl: new4
-  }
-];
-
 const subscribeToNews = () => {
   try {
     isLoading.value = true;
@@ -77,18 +46,18 @@ const subscribeToNews = () => {
         });
       });
       
-      // Si no hay noticias en Firebase, usar las por defecto
-      news.value = newsList.length > 0 ? newsList : defaultNews;
+      // Asignar las noticias obtenidas de Firebase
+      news.value = newsList;
       isLoading.value = false;
     }, (error) => {
       console.error('Error listening to news:', error);
-      // En caso de error, usar noticias por defecto
-      news.value = defaultNews;
+      // En caso de error, asignar un array vacío
+      news.value = [];
       isLoading.value = false;
     });
   } catch (error) {
     console.error('Error setting up news subscription:', error);
-    news.value = defaultNews;
+    news.value = [];
     isLoading.value = false;
   }
 };

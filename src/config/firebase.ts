@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore'; // connectFirestoreEmulator removido porque no se usa
-import { getAuth } from 'firebase/auth';
+import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
+import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCdKhRlNZ_dFrEfRFWBPfKFNDyVaDHA8Jc",
@@ -19,6 +19,22 @@ export const db = getFirestore(app);
 
 // Initialize Auth
 export const auth = getAuth(app);
+
+// Enable offline persistence
+try {
+  await enableIndexedDbPersistence(db).catch((err) => {
+    if (err.code === 'failed-precondition') {
+      console.warn('Multiple tabs open, persistence can only be enabled in one tab at a time.');
+    } else if (err.code === 'unimplemented') {
+      console.warn('The current browser does not support all of the features required to enable persistence.');
+    }
+  });
+  
+  // Enable auth persistence
+  await setPersistence(auth, browserLocalPersistence);
+} catch (error) {
+  console.error('Error enabling offline persistence:', error);
+}
 
 // Deshabilitar emulador para usar Firebase en la nube
 // Si necesitas usar el emulador local, comenta este bloque y descomenta el siguiente
