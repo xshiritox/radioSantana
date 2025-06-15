@@ -26,8 +26,8 @@ const connectionStatus = computed(() => {
 const reconnect = () => {
   if (isLoggedIn) {
     initializeChat();
-  } else if (username) {
-    login(username);
+  } else if (username.value) {
+    login(username.value);
   }
 };
 
