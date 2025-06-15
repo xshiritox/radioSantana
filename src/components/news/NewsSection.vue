@@ -5,17 +5,14 @@ import {
   query, 
   orderBy, 
   limit, 
-  onSnapshot,
-  Timestamp
+  onSnapshot
 } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { NewspaperIcon, CalendarIcon, UserIcon } from '@heroicons/vue/24/outline';
 import type { NewsItem } from '../../types/radio';
 
-// Importar imágenes por defecto.
+// Importar imagen por defecto
 import new1 from '../../assets/new1.jpg';
-import new3 from '../../assets/new3.jpg';
-import new4 from '../../assets/new4.jpg';
 
 const news = ref<NewsItem[]>([]);
 const isLoading = ref(false);

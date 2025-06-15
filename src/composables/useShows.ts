@@ -8,10 +8,8 @@ import {
 import { db } from '../config/firebase';
 import type { Show } from '../types/radio';
 
-// Importar imágenes por defecto
+// Importar imagen por defecto
 import new1 from '../assets/new1.jpg';
-import pro2 from '../assets/pro2.jpg';
-import pro3 from '../assets/pro3.jpg';
 
 export function useShows() {
   const shows = ref<Show[]>([]);
@@ -55,7 +53,7 @@ export function useShows() {
       });
     } catch (error) {
       console.error('Error setting up shows subscription:', error);
-      shows.value = defaultShows;
+      shows.value = [];
       isLoading.value = false;
     }
   };
