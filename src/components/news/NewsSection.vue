@@ -1,20 +1,35 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { 
+  collection, 
+  query, 
+  orderBy, 
+  limit, 
+  onSnapshot,
+  Timestamp
+} from 'firebase/firestore';
+import { db } from '../config/firebase';
 import { NewspaperIcon, CalendarIcon, UserIcon } from '@heroicons/vue/24/outline';
 import type { NewsItem } from '../../types/radio';
 
-// Importar imágenes
+// Importar imágenes por defecto
 import new1 from '../../assets/new1.jpg';
 import new3 from '../../assets/new3.jpg';
 import new4 from '../../assets/new4.jpg';
 
-const news = ref<NewsItem[]>([
+const news = ref<NewsItem[]>([]);
+const isLoading = ref(false);
+
+let unsubscribe: (() => void) | null = null;
+
+// Noticias por defecto (fallback)
+const defaultNews: NewsItem[] = [
   {
     id: '1',
     title: 'Nueva Programación',
-    content: 'Pronto comezaremos con nueva programación para ti',
+    content: 'Pronto comenzaremos con nueva programación para ti',
     author: 'Equipo RadioVirtual Santana',
-    publishedAt: new Date('2025-06-11'), // Hoy
+    publishedAt: new Date('2025-01-11'),
     category: 'Radio',
     imageUrl: new1
   },
@@ -23,7 +38,7 @@ const news = ref<NewsItem[]>([
     title: 'Renovación de Equipos Técnicos',
     content: 'Hemos renovado todo nuestro equipo técnico para ofrecerte la mejor calidad de sonido. Ahora transmitimos en alta definición 24/7.',
     author: 'Equipo RadioVirtual Santana',
-    publishedAt: new Date('2025-06-10'), // Hoy
+    publishedAt: new Date('2025-01-10'),
     category: 'Tecnología',
     imageUrl: new3
   },
@@ -32,11 +47,51 @@ const news = ref<NewsItem[]>([
     title: 'Nuevo Chat Interactivo',
     content: 'Ya puedes interactuar con otros oyentes y con nuestros DJs a través del nuevo chat en vivo integrado en nuestra página web.',
     author: 'Equipo RadioVirtual Santana',
-    publishedAt: new Date('2025-06-11'), // Hoy
+    publishedAt: new Date('2025-01-11'),
     category: 'Tecnología',
     imageUrl: new4
   }
-]);
+];
+
+const subscribeToNews = () => {
+  try {
+    isLoading.value = true;
+    const newsCollection = collection(db, 'news');
+    const q = query(newsCollection, orderBy('publishedAt', 'desc'), limit(10));
+    
+    unsubscribe = onSnapshot(q, (snapshot) => {
+      const newsList: NewsItem[] = [];
+      
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        newsList.push({
+          id: doc.id,
+          title: data.title,
+          content: data.content,
+          author: data.author,
+          publishedAt: data.publishedAt instanceof Timestamp 
+            ? data.publishedAt.toDate() 
+            : new Date(data.createdAt || Date.now()),
+          category: data.category,
+          imageUrl: data.imageUrl || new1
+        });
+      });
+      
+      // Si no hay noticias en Firebase, usar las por defecto
+      news.value = newsList.length > 0 ? newsList : defaultNews;
+      isLoading.value = false;
+    }, (error) => {
+      console.error('Error listening to news:', error);
+      // En caso de error, usar noticias por defecto
+      news.value = defaultNews;
+      isLoading.value = false;
+    });
+  } catch (error) {
+    console.error('Error setting up news subscription:', error);
+    news.value = defaultNews;
+    isLoading.value = false;
+  }
+};
 
 const formatDate = (date: Date) => {
   return date.toLocaleDateString('es-ES', { 
@@ -54,6 +109,16 @@ const getCategoryColor = (category: string) => {
     default: return 'bg-silver-500 text-white';
   }
 };
+
+onMounted(() => {
+  subscribeToNews();
+});
+
+onUnmounted(() => {
+  if (unsubscribe) {
+    unsubscribe();
+  }
+});
 </script>
 
 <template>
@@ -69,8 +134,14 @@ const getCategoryColor = (category: string) => {
       </div>
     </div>
 
+    <!-- Loading State -->
+    <div v-if="isLoading" class="text-center py-8">
+      <div class="animate-spin w-8 h-8 border-2 border-gold-500 border-t-transparent rounded-full mx-auto"></div>
+      <p class="text-silver-400 text-sm mt-2">Cargando noticias...</p>
+    </div>
+
     <!-- Featured News -->
-    <div v-if="news.length > 0" class="mb-8">
+    <div v-else-if="news.length > 0" class="mb-8">
       <div class="bg-gradient-to-r from-gold-600 to-gold-500 rounded-2xl p-6 text-white shadow-xl">
         <div class="flex flex-col md:flex-row md:items-center md:space-x-6">
           <div class="md:w-1/3 mb-4 md:mb-0">
@@ -149,8 +220,14 @@ const getCategoryColor = (category: string) => {
       </div>
     </div>
 
+    <!-- Empty State -->
+    <div v-if="news.length === 0 && !isLoading" class="text-center py-8">
+      <NewspaperIcon class="h-16 w-16 text-silver-400 mx-auto mb-4" />
+      <p class="text-silver-400">No hay noticias disponibles</p>
+    </div>
+
     <!-- Load More Button -->
-    <div class="mt-8 text-center">
+    <div v-if="news.length > 0" class="mt-8 text-center">
       <button class="px-6 py-3 bg-gold-gradient text-white font-medium rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-200">
         Ver Más Noticias
       </button>

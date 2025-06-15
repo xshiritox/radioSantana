@@ -1,13 +1,28 @@
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { 
+  collection, 
+  query, 
+  orderBy, 
+  onSnapshot,
+  Timestamp
+} from 'firebase/firestore';
+import { db } from '../config/firebase';
 import type { Show } from '../types/radio';
 
-// Importar imágenes
+// Importar imágenes por defecto
 import new1 from '../assets/new1.jpg';
 import pro2 from '../assets/pro2.jpg';
 import pro3 from '../assets/pro3.jpg';
 
 export function useShows() {
-  const shows = ref<Show[]>([
+  const shows = ref<Show[]>([]);
+  const currentShow = ref<Show | null>(null);
+  const isLoading = ref(false);
+  
+  let unsubscribe: (() => void) | null = null;
+
+  // Shows por defecto (fallback)
+  const defaultShows: Show[] = [
     {
       id: '1',
       name: 'Música del Momento',
@@ -41,9 +56,47 @@ export function useShows() {
       isLive: false,
       imageUrl: pro3
     }
-  ]);
+  ];
 
-  const currentShow = ref<Show | null>(null);
+  const subscribeToShows = () => {
+    try {
+      isLoading.value = true;
+      const showsCollection = collection(db, 'shows');
+      const q = query(showsCollection, orderBy('startTime', 'asc'));
+      
+      unsubscribe = onSnapshot(q, (snapshot) => {
+        const showsList: Show[] = [];
+        
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          showsList.push({
+            id: doc.id,
+            name: data.name,
+            host: data.host,
+            description: data.description,
+            startTime: data.startTime,
+            endTime: data.endTime,
+            days: data.days,
+            isLive: data.isLive || false,
+            imageUrl: data.imageUrl || new1
+          });
+        });
+        
+        // Si no hay shows en Firebase, usar los por defecto
+        shows.value = showsList.length > 0 ? showsList : defaultShows;
+        isLoading.value = false;
+      }, (error) => {
+        console.error('Error listening to shows:', error);
+        // En caso de error, usar shows por defecto
+        shows.value = defaultShows;
+        isLoading.value = false;
+      });
+    } catch (error) {
+      console.error('Error setting up shows subscription:', error);
+      shows.value = defaultShows;
+      isLoading.value = false;
+    }
+  };
 
   const getCurrentShow = () => {
     const now = new Date();
@@ -75,10 +128,22 @@ export function useShows() {
     return shows.value.slice(0, 3);
   };
 
+  onMounted(() => {
+    subscribeToShows();
+  });
+
+  onUnmounted(() => {
+    if (unsubscribe) {
+      unsubscribe();
+    }
+  });
+
   return {
     shows,
     currentShow,
+    isLoading,
     getCurrentShow,
-    getUpcomingShows
+    getUpcomingShows,
+    subscribeToShows
   };
 }
