@@ -1,14 +1,14 @@
 <script setup lang="ts">
 const socialLinks = [
-  { name: 'Facebook', url: 'https://www.facebook.com/share/16ap34GVi9/', icon: '📘' },
+  { name: 'Facebook', url: '#', icon: '📘' },
   { name: 'Instagram', url: '#', icon: '📷' },
-  { name: 'Twitter', url: 'https://x.com/NMradio_santana', icon: '🐦' },
-  { name: 'YouTube', url: 'https://www.youtube.com/@SantanaRadioOnline', icon: '📺' },
+  { name: 'Twitter', url: '#', icon: '🐦' },
+  { name: 'YouTube', url: '#', icon: '📺' },
   { name: 'WhatsApp', url: 'https://wa.me/573106035384?text=Hola%20vengo%20desde%20Radio%20Santana', icon: '💬' }
 ];
 
 const contactInfo = {
-  phone: '+57 310 603584',
+  phone: '+57 310 603584 / +53 53547990',
   email: 'radiosantana.nm@gmail.com',
   address: 'Colombia'
 };
@@ -26,7 +26,7 @@ const contactInfo = {
               <span class="text-xl font-bold">📻</span>
             </div>
             <h3 class="text-xl font-bold text-white">
-              RadioOnline Santana
+              RadioVirtual Santana
             </h3>
           </div>
           <p class="text-silver-300 text-sm leading-relaxed">
@@ -118,7 +118,7 @@ const contactInfo = {
       <div class="border-t border-silver-800 mt-8 pt-6">
         <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p class="text-sm text-silver-400">
-            © {{ new Date().getFullYear() }} RadioOnline Santana. Todos los derechos reservados.
+            © {{ new Date().getFullYear() }} RadioVirtual Santana. Todos los derechos reservados.
           </p>
           <div class="flex items-center space-x-6 text-xs text-silver-400">
             <a href="#" class="hover:text-gold-400 transition-colors">Política de Privacidad</a>

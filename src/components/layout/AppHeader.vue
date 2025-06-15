@@ -27,11 +27,11 @@ const menuItems = [
         <!-- Logo -->
           <div class="flex items-center space-x-3">
             <div class="w-12 h-12 rounded-full bg-gradient-to-r from-gold-400 via-gold-300 to-gold-200 flex items-center justify-center shadow-lg">
-              <img src="/src/assets/logo.jpg" alt="Logo RadioOnline Santana" class="w-10 h-10 object-cover rounded-full" />
+              <img src="/src/assets/logo.jpg" alt="Logo RadioVirtual Santana" class="w-10 h-10 object-cover rounded-full" />
           </div>
             <div>
               <h1 class="text-2xl font-bold bg-gradient-to-r from-gold-400 via-gold-300 to-gold-200 bg-clip-text text-transparent">
-              RadioOnline Santana
+              RadioVirtual Santana
             </h1>
               <p class="text-sm font-medium tracking-wider">
                 <span class="text-silver-300/80">Project:</span> 

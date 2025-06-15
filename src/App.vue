@@ -122,7 +122,7 @@ onMounted(() => {
                     </div>
                     <div>
                       <p class="text-silver-300 text-sm">Teléfono</p>
-                      <p class="text-white font-semibold">+57 310 603584</p>
+                      <p class="text-white font-semibold">+57 310 603584 / +53 53547990</p>
                     </div>
                   </div>
                   

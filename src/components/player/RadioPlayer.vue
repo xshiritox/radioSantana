@@ -37,7 +37,7 @@ const handleVolumeChange = (event: Event) => {
         </div>
         <div>
           <h3 class="text-2xl font-bold text-white">
-            RadioOnline Santana
+            RadioVirtual Santana
           </h3>
           <div class="flex items-center space-x-2 mt-2">
             <div class="flex items-center space-x-1">

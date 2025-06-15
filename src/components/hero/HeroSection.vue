@@ -23,14 +23,14 @@
         <!-- Logo/Icon -->
         <div class="mb-8">
           <div class="w-32 h-32 bg-gold-gradient rounded-full mx-auto flex items-center justify-center shadow-2xl animate-bounce-slow">
-            <img src="/src/assets/logo.jpg" alt="Logo RadioOnline Santana" class="w-28 h-28 object-cover rounded-full" />
+            <img src="/src/assets/logo.jpg" alt="Logo RadioVirtual Santana" class="w-28 h-28 object-cover rounded-full" />
           </div>
         </div>
 
         <!-- Main Title -->
         <h1 class="text-6xl md:text-8xl font-bold mb-6">
           <span class="bg-gradient-to-r from-gold-400 via-gold-300 to-gold-400 bg-clip-text text-transparent animate-pulse-slow">
-            RadioOnline
+            RadioVirtual
           </span>
           <br>
           <span class="bg-gradient-to-r from-silver-300 via-white to-silver-300 bg-clip-text text-transparent">

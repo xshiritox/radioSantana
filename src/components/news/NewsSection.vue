@@ -13,7 +13,7 @@ const news = ref<NewsItem[]>([
     id: '1',
     title: 'Nueva Programación',
     content: 'Pronto comezaremos con nueva programación para ti',
-    author: 'Equipo RadioOnline Santana',
+    author: 'Equipo RadioVirtual Santana',
     publishedAt: new Date('2025-06-11'), // Hoy
     category: 'Radio',
     imageUrl: new1
@@ -22,8 +22,8 @@ const news = ref<NewsItem[]>([
     id: '3',
     title: 'Renovación de Equipos Técnicos',
     content: 'Hemos renovado todo nuestro equipo técnico para ofrecerte la mejor calidad de sonido. Ahora transmitimos en alta definición 24/7.',
-    author: 'Equipo RadioOnline Santana',
-    publishedAt: new Date('22025-06-10'), // Hoy
+    author: 'Equipo RadioVirtual Santana',
+    publishedAt: new Date('2025-06-10'), // Hoy
     category: 'Tecnología',
     imageUrl: new3
   },
@@ -31,7 +31,7 @@ const news = ref<NewsItem[]>([
     id: '4',
     title: 'Nuevo Chat Interactivo',
     content: 'Ya puedes interactuar con otros oyentes y con nuestros DJs a través del nuevo chat en vivo integrado en nuestra página web.',
-    author: 'Equipo RadioOnline Santana',
+    author: 'Equipo RadioVirtual Santana',
     publishedAt: new Date('2025-06-11'), // Hoy
     category: 'Tecnología',
     imageUrl: new4
@@ -65,7 +65,7 @@ const getCategoryColor = (category: string) => {
       </div>
       <div>
         <h3 class="text-2xl font-bold text-white">Noticias y Actualizaciones</h3>
-        <p class="text-silver-300">Lo último de RadioOnline Santana</p>
+        <p class="text-silver-300">Lo último de RadioVirtual Santana</p>
       </div>
     </div>
 
