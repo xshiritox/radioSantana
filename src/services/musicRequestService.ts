@@ -8,7 +8,9 @@ import {
   serverTimestamp,
   Timestamp,
   updateDoc,
-  doc 
+  doc,
+  deleteDoc,
+  getDocs
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { MusicRequest } from '../types/radio';
@@ -24,6 +26,46 @@ export class MusicRequestService {
     return MusicRequestService.instance;
   }
 
+  // Función para eliminar solicitudes antiguas (mantener solo las 3 más recientes)
+  private async cleanupOldRequests() {
+    try {
+      // Primero, obtener las 3 más recientes
+      const recentQuery = query(
+        this.requestsCollection,
+        orderBy('timestamp', 'desc'),
+        limit(3)
+      );
+      
+      // Luego, obtener todas las solicitudes
+      const allQuery = query(
+        this.requestsCollection,
+        orderBy('timestamp', 'desc')
+      );
+      
+      const [recentSnapshot, allSnapshot] = await Promise.all([
+        getDocs(recentQuery),
+        getDocs(allQuery)
+      ]);
+      
+      // Si hay más de 3 solicitudes, eliminar las más antiguas
+      if (allSnapshot.size > 3) {
+        const recentIds = new Set(recentSnapshot.docs.map(doc => doc.id));
+        
+        // Eliminar todas las que no estén en las 3 más recientes
+        const deletePromises = allSnapshot.docs
+          .filter(doc => !recentIds.has(doc.id))
+          .map(doc => deleteDoc(doc.ref));
+        
+        if (deletePromises.length > 0) {
+          await Promise.all(deletePromises);
+          console.log(`Se eliminaron ${deletePromises.length} solicitudes antiguas`);
+        }
+      }
+    } catch (error) {
+      console.error('Error limpiando solicitudes antiguas:', error);
+    }
+  }
+
   // Enviar petición musical
   async submitRequest(
     track: string, 
@@ -32,6 +74,7 @@ export class MusicRequestService {
     message?: string
   ): Promise<void> {
     try {
+      // Agregar la nueva solicitud
       await addDoc(this.requestsCollection, {
         track: track.trim(),
         artist: artist.trim(),
@@ -41,18 +84,21 @@ export class MusicRequestService {
         timestamp: serverTimestamp(),
         createdAt: new Date().toISOString()
       });
+      
+      // Limpiar solicitudes antiguas después de agregar una nueva
+      await this.cleanupOldRequests();
     } catch (error) {
-      console.error('Error submitting request:', error);
+      console.error('Error al enviar la solicitud:', error);
       throw new Error('No se pudo enviar la petición');
     }
   }
 
-  // Escuchar peticiones en tiempo real
+  // Escuchar peticiones en tiempo real (solo las 3 más recientes)
   subscribeToRequests(callback: (requests: MusicRequest[]) => void): () => void {
     const q = query(
       this.requestsCollection, 
       orderBy('timestamp', 'desc'), 
-      limit(20)
+      limit(3)
     );
 
     return onSnapshot(q, (snapshot) => {
