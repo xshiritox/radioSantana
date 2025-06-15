@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick, watch } from 'vue';
+import { ref, nextTick, watch, computed } from 'vue';
 import { useChat } from '../../composables/useChat';
 import { PaperAirplaneIcon, UserIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import BaseButton from '../common/BaseButton.vue';
@@ -12,8 +12,24 @@ const {
   error,
   sendMessage, 
   login, 
-  logout
+  logout,
+  initializeChat,
+  isConnected
 } = useChat();
+
+const connectionStatus = computed(() => {
+  if (isConnected) return { text: 'Conectado', color: 'text-green-400' };
+  if (isLoading) return { text: 'Conectando...', color: 'text-yellow-400' };
+  return { text: 'Desconectado', color: 'text-red-400' };
+});
+
+const reconnect = () => {
+  if (isLoggedIn) {
+    initializeChat();
+  } else if (username) {
+    login(username);
+  }
+};
 
 const newMessage = ref('');
 const loginName = ref('');
@@ -72,8 +88,13 @@ watch(messages, () => {
           <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
             <span class="text-xl">💬</span>
           </div>
-          <div>
-            <h3 class="text-lg font-bold text-white">Chat En Vivo</h3>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-bold text-white">Chat En Vivo</h3>
+              <span class="text-xs px-2 py-0.5 rounded-full" :class="[connectionStatus.color, 'bg-black/20']">
+                {{ connectionStatus.text }}
+              </span>
+            </div>
             <p class="text-white/80 text-sm">{{ messages.length }} mensajes</p>
           </div>
         </div>
@@ -91,8 +112,18 @@ watch(messages, () => {
 
     <!-- Error Message -->
     <div v-if="error" class="bg-red-600 text-white p-3 flex items-center space-x-2">
-      <ExclamationTriangleIcon class="h-5 w-5" />
-      <span class="text-sm">{{ error }}</span>
+      <ExclamationTriangleIcon class="h-5 w-5 flex-shrink-0" />
+      <div class="flex-1">
+        <p class="text-sm font-medium">Error de conexión</p>
+        <p class="text-xs opacity-90">{{ error }}</p>
+        <button 
+          @click="reconnect"
+          class="mt-1 text-xs bg-white/20 hover:bg-white/30 px-2 py-1 rounded transition-colors"
+          :disabled="isLoading"
+        >
+          {{ isLoading ? 'Conectando...' : 'Reintentar' }}
+        </button>
+      </div>
     </div>
 
     <!-- Login Form (if not logged in) -->

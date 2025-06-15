@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
 
@@ -11,47 +11,39 @@ const firebaseConfig = {
   appId: "1:969499423409:web:39d81d4686017371df2890"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Inicializar Firebase (evitar múltiples inicializaciones)
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-// Initialize Firestore
+// Inicializar Firestore
 export const db = getFirestore(app);
 
-// Initialize Auth
+// Inicializar Auth
 export const auth = getAuth(app);
 
-// Función asíncrona auto-ejecutable para inicializar la persistencia
-(async () => {
+// Función para inicializar la persistencia
+const initializePersistence = async () => {
   try {
+    // Habilitar persistencia de Firestore
     await enableIndexedDbPersistence(db).catch((err) => {
       if (err.code === 'failed-precondition') {
-        console.warn('Multiple tabs open, persistence can only be enabled in one tab at a time.');
+        console.warn('Múltiples pestañas abiertas, la persistencia solo puede estar habilitada en una pestaña a la vez.');
       } else if (err.code === 'unimplemented') {
-        console.warn('The current browser does not support all of the features required to enable persistence.');
+        console.warn('El navegador actual no admite todas las funciones necesarias para habilitar la persistencia.');
+      } else {
+        console.error('Error al habilitar la persistencia:', err);
       }
     });
     
-    // Enable auth persistence
+    // Configurar persistencia de autenticación
     await setPersistence(auth, browserLocalPersistence);
+    
+    console.log('Persistencia configurada correctamente');
   } catch (error) {
-    console.error('Error enabling offline persistence:', error);
+    console.error('Error al configurar la persistencia:', error);
   }
-})();
+};
 
-// Deshabilitar emulador para usar Firebase en la nube
-// Si necesitas usar el emulador local, comenta este bloque y descomenta el siguiente
-
-/*
-// Conectar al emulador local (solo para desarrollo)
-if (import.meta.env.DEV && !import.meta.env.VITE_FIREBASE_EMULATOR_CONNECTED) {
-  try {
-    connectFirestoreEmulator(db, 'localhost', 8080);
-    // Set flag to prevent multiple connections
-    (import.meta.env as any).VITE_FIREBASE_EMULATOR_CONNECTED = true;
-  } catch (error) {
-    console.log('Firebase emulator not connected:', error);
-  }
-}
-*/
+// Inicializar persistencia al cargar la aplicación
+initializePersistence().catch(console.error);
 
 export default app;
