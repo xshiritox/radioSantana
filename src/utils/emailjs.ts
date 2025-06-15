@@ -103,7 +103,7 @@ export const emailjsSend = async (data: EmailData): Promise<EmailResponse> => {
       
       console.log('✅ Correo de confirmación enviado exitosamente:', response);
       
-    } catch (error) {
+    } catch (error: any) {
       console.warn('⚠️ No se pudo enviar el correo de confirmación, pero el mensaje principal se envió correctamente');
       console.error('Detalles del error de confirmación:', {
         status: error?.status,

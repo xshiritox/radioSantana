@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore'; // connectFirestoreEmulator removido porque no se usa
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
