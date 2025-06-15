@@ -2,13 +2,22 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
 
+// Configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCdKhRlNZ_dFrEfRFWBPfKFNDyVaDHA8Jc",
-  authDomain: "radiosantananm-cda61.firebaseapp.com",
+  authDomain: window.location.hostname === 'localhost' 
+    ? "radiosantananm-cda61.firebaseapp.com" 
+    : "radiosantana.netlify.app",
   projectId: "radiosantananm-cda61",
   storageBucket: "radiosantananm-cda61.appspot.com",
   messagingSenderId: "969499423409",
   appId: "1:969499423409:web:39d81d4686017371df2890"
+};
+
+// Configuración de dominios autorizados para redirección
+export const AUTH_DOMAINS = {
+  PRODUCTION: 'radiosantana.netlify.app',
+  FIREBASE: 'radiosantananm-cda61.firebaseapp.com'
 };
 
 // Inicializar Firebase (evitar múltiples inicializaciones)
