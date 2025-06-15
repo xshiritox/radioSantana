@@ -8,7 +8,7 @@ import {
   onSnapshot,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { db } from '../../config/firebase';
 import { NewspaperIcon, CalendarIcon, UserIcon } from '@heroicons/vue/24/outline';
 import type { NewsItem } from '../../types/radio';
 
