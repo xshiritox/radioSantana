@@ -22,41 +22,72 @@ const isLoading = ref(false);
 
 let unsubscribe: (() => void) | null = null;
 
+// Estado para manejar el error
+const error = ref<string | null>(null);
+
+// Función para procesar los documentos de Firestore
+const processNewsDocuments = (docs: any[]): NewsItem[] => {
+  return docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      title: data.title || 'Sin título',
+      content: data.content || '',
+      author: data.author || 'Anónimo',
+      publishedAt: data.publishedAt?.toDate?.() || new Date(),
+      category: data.category || 'General',
+      imageUrl: data.imageUrl || new1
+    };
+  });
+};
+
+// Suscripción en tiempo real a las noticias
 const subscribeToNews = () => {
   try {
     isLoading.value = true;
-    const newsCollection = collection(db, 'news');
-    const q = query(newsCollection, orderBy('publishedAt', 'desc'), limit(10));
+    error.value = null;
     
-    unsubscribe = onSnapshot(q, (snapshot) => {
-      const newsList: NewsItem[] = [];
-      
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        newsList.push({
-          id: doc.id,
-          title: data.title,
-          content: data.content,
-          author: data.author,
-          publishedAt: data.publishedAt instanceof Timestamp 
-            ? data.publishedAt.toDate() 
-            : new Date(data.createdAt || Date.now()),
-          category: data.category,
-          imageUrl: data.imageUrl || new1
-        });
-      });
-      
-      // Asignar las noticias obtenidas de Firebase
-      news.value = newsList;
-      isLoading.value = false;
-    }, (error) => {
-      console.error('Error listening to news:', error);
-      // En caso de error, asignar un array vacío
-      news.value = [];
-      isLoading.value = false;
-    });
-  } catch (error) {
-    console.error('Error setting up news subscription:', error);
+    const newsCollection = collection(db, 'news');
+    const q = query(
+      newsCollection, 
+      orderBy('publishedAt', 'desc'), 
+      limit(10)
+    );
+    
+    // Suscripción en tiempo real
+    unsubscribe = onSnapshot(
+      q,
+      (querySnapshot) => {
+        try {
+          const newsList = processNewsDocuments(querySnapshot.docs);
+          news.value = newsList;
+          error.value = null;
+        } catch (err) {
+          console.error('Error procesando noticias:', err);
+          error.value = 'Error al procesar las noticias';
+          news.value = [];
+        } finally {
+          isLoading.value = false;
+        }
+      },
+      (firebaseError) => {
+        console.error('Error en la suscripción:', firebaseError);
+        error.value = 'No se pudieron cargar las noticias. Intenta recargar la página.';
+        news.value = [];
+        isLoading.value = false;
+      }
+    );
+    
+    // Limpiar el error después de 5 segundos
+    if (error.value) {
+      setTimeout(() => {
+        error.value = null;
+      }, 5000);
+    }
+    
+  } catch (err) {
+    console.error('Error en la suscripción a noticias:', err);
+    error.value = 'Error al suscribirse a las noticias';
     news.value = [];
     isLoading.value = false;
   }
@@ -100,6 +131,16 @@ onUnmounted(() => {
       <div>
         <h3 class="text-2xl font-bold text-white">Noticias y Actualizaciones</h3>
         <p class="text-silver-300">Lo último de RadioVirtual Santana</p>
+      </div>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div v-if="error" class="bg-red-500/20 border-l-4 border-red-500 text-red-100 p-4 mb-6 rounded-r-lg">
+      <div class="flex items-center">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+        <p class="font-medium">{{ error }}</p>
       </div>
     </div>
 
