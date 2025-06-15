@@ -30,7 +30,7 @@ const contactInfo = {
             </h3>
           </div>
           <p class="text-silver-300 text-sm leading-relaxed">
-            Tu RadioOnline favorito las 24 horas del día. 
+            La forma + fresca de escuchar radio. 
             Música variada, noticias y entretenimiento para toda la familia.
           </p>
           <div class="flex items-center space-x-2">
