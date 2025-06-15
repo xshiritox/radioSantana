@@ -1,5 +1,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { chatService } from '../services/chatService';
+import { auth } from '../config/firebase';
+import { signInAnonymously } from 'firebase/auth';
 import type { ChatMessage } from '../types/radio';
 
 export function useChat() {
@@ -30,9 +32,20 @@ export function useChat() {
   };
 
   const login = async (name: string): Promise<boolean> => {
-    if (!name.trim()) return false;
+    if (!name.trim()) {
+      error.value = 'Por favor ingresa un nombre';
+      return false;
+    }
     
     try {
+      isLoading.value = true;
+      console.log('Intentando autenticación anónima...');
+      
+      // Iniciar sesión anónimamente
+      const userCredential = await signInAnonymously(auth);
+      console.log('Autenticación exitosa:', userCredential);
+      
+      // Configurar el nombre de usuario
       username.value = name.trim();
       isLoggedIn.value = true;
       isConnected.value = true;
@@ -41,10 +54,24 @@ export function useChat() {
       await chatService.sendSystemMessage(`¡${username.value} se ha unido al chat!`);
       
       return true;
-    } catch (err) {
-      error.value = 'Error al conectar al chat';
-      console.error('Error logging in:', err);
+    } catch (err: any) {
+      console.error('Error en login:', {
+        code: err.code,
+        message: err.message,
+        fullError: err
+      });
+      
+      if (err.code === 'auth/admin-restricted-operation') {
+        error.value = 'Error de configuración: La autenticación anónima no está habilitada en Firebase';
+      } else if (err.code === 'auth/network-request-failed') {
+        error.value = 'Error de red: No se pudo conectar al servidor';
+      } else {
+        error.value = 'Error al conectar al chat: ' + (err.message || 'Error desconocido');
+      }
+      
       return false;
+    } finally {
+      isLoading.value = false;
     }
   };
 

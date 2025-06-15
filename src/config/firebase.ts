@@ -20,16 +20,20 @@ export const db = getFirestore(app);
 // Initialize Auth
 export const auth = getAuth(app);
 
-// Connect to emulator in development (optional)
+// Deshabilitar emulador para usar Firebase en la nube
+// Si necesitas usar el emulador local, comenta este bloque y descomenta el siguiente
+
+/*
+// Conectar al emulador local (solo para desarrollo)
 if (import.meta.env.DEV && !import.meta.env.VITE_FIREBASE_EMULATOR_CONNECTED) {
   try {
     connectFirestoreEmulator(db, 'localhost', 8080);
     // Set flag to prevent multiple connections
     (import.meta.env as any).VITE_FIREBASE_EMULATOR_CONNECTED = true;
   } catch (error) {
-    // Emulator already connected or not available
     console.log('Firebase emulator not connected:', error);
   }
 }
+*/
 
 export default app;

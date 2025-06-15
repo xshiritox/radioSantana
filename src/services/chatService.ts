@@ -29,8 +29,7 @@ export class ChatService {
         username: username.trim(),
         message: message.trim(),
         type,
-        timestamp: serverTimestamp(),
-        createdAt: new Date().toISOString()
+        timestamp: serverTimestamp() // Usamos solo serverTimestamp
       });
     } catch (error) {
       console.error('Error sending message:', error);

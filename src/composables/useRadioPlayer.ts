@@ -136,14 +136,16 @@ export function useRadioPlayer() {
 
   const updateRadioStats = async () => {
     try {
-      // Aquí necesitarás configurar la URL correcta de tu API
-      const response = await fetch('TU_URL_API_STREAMING');
-      const data = await response.json();
+      // Use a placeholder or your actual streaming stats endpoint
+      // For now, we'll use mock data since we don't have a real endpoint
+      // Replace this with your actual API endpoint:
+      // const response = await fetch('YOUR_ACTUAL_STREAMING_STATS_ENDPOINT');
+      // const data = await response.json();
       
-      // Actualizar los datos reales
-      radioStats.value.listeners = data.listeners || 0;
-      radioStats.value.bitrate = data.bitrate || '128kbps';
-      radioStats.value.genre = data.genre || 'Variado';
+      // Mock data for now
+      radioStats.value.listeners = Math.floor(Math.random() * 100) + 50; // Random listeners between 50-150
+      radioStats.value.bitrate = '128kbps';
+      radioStats.value.genre = 'Variado';
     } catch (error) {
       console.error('Error al obtener datos de streaming:', error);
       // Mantener los valores actuales en caso de error
@@ -153,12 +155,18 @@ export function useRadioPlayer() {
   onMounted(() => {
     initializePlayer();
     updateCurrentTrack();
-    updateRadioStats();
+    
+    // Only try to update stats if we have a valid endpoint
+    try {
+      updateRadioStats();
+    } catch (error) {
+      console.warn('Could not update radio stats. Using default values.');
+    }
     
     // Update track info every 30 seconds
     const trackInterval = setInterval(updateCurrentTrack, 30000);
-    // Update stats every 10 seconds
-    const statsInterval = setInterval(updateRadioStats, 10000);
+    // Update stats every 60 seconds instead of 10 to reduce errors
+    const statsInterval = setInterval(updateRadioStats, 60000);
 
     onUnmounted(() => {
       clearInterval(trackInterval);
