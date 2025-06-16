@@ -90,7 +90,7 @@ const handleLogin = async () => {
               id="email"
               required
               class="w-full px-4 py-3 pl-10 rounded-lg bg-silver-800 border border-silver-700 focus:ring-2 focus:ring-gold-500 focus:border-transparent text-white placeholder-silver-400"
-              placeholder="admin@radiosantana.com"
+              placeholder="Usuario / Correo Electronico"
               :disabled="isLoading"
             />
             <UserIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-silver-400" />

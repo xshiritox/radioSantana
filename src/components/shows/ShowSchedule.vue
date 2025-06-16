@@ -26,11 +26,15 @@ const formatTime = (time: string) => {
         <span class="text-xs md:text-sm font-medium uppercase tracking-wide">EN VIVO AHORA</span>
       </div>
       <div class="flex items-center space-x-3 md:space-x-4">
-        <img 
-          :src="currentShow.imageUrl" 
-          :alt="currentShow.name"
-          class="w-16 h-16 md:w-20 md:h-20 rounded-xl object-cover shadow-lg flex-shrink-0"
-        />
+        <div class="w-16 h-16 md:w-20 md:h-20 rounded-xl shadow-lg overflow-hidden flex-shrink-0">
+          <img 
+            :src="currentShow.imageUrl" 
+            :alt="currentShow.name"
+            class="w-full h-full"
+            style="width: 100%; height: 100%; object-fit: cover;"
+            loading="lazy"
+          />
+        </div>
         <div class="flex-1 min-w-0">
           <h3 class="text-xl md:text-2xl font-bold mb-1 truncate">{{ currentShow.name }}</h3>
           <p class="text-white/90 text-sm md:text-base mb-1 md:mb-2 truncate">Con {{ currentShow.host }}</p>
@@ -61,11 +65,15 @@ const formatTime = (time: string) => {
             <div class="flex items-start space-x-3 md:space-x-4">
               <!-- Show Image -->
               <div class="relative flex-shrink-0">
-                <img 
-                  :src="show.imageUrl" 
-                  :alt="show.name"
-                  class="w-14 h-14 md:w-16 md:h-16 rounded-lg object-cover shadow-lg"
-                />
+                <div class="w-14 h-14 md:w-16 md:h-16 rounded-lg shadow-lg overflow-hidden">
+                  <img 
+                    :src="show.imageUrl" 
+                    :alt="show.name"
+                    class="w-full h-full"
+                    style="width: 100%; height: 100%; object-fit: cover;"
+                    loading="lazy"
+                  />
+                </div>
                 <div v-if="isCurrentShow(show)" class="absolute -top-1 -right-1 w-5 h-5 md:w-6 md:h-6 bg-white rounded-full flex items-center justify-center">
                   <div class="w-2.5 h-2.5 md:w-3 md:h-3 bg-red-500 rounded-full animate-pulse"></div>
                 </div>
@@ -132,7 +140,9 @@ const formatTime = (time: string) => {
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

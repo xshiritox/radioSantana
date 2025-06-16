@@ -152,11 +152,15 @@ onUnmounted(() => {
       <div class="bg-gradient-to-r from-gold-600 to-gold-500 rounded-2xl p-6 text-white shadow-xl">
         <div class="flex flex-col md:flex-row md:items-center md:space-x-6">
           <div class="md:w-1/3 mb-4 md:mb-0">
-            <img 
-              :src="news[0].imageUrl" 
-              :alt="news[0].title"
-              class="w-full h-48 md:h-32 object-cover rounded-xl shadow-lg"
-            />
+            <div class="w-full h-full rounded-xl shadow-lg overflow-hidden">
+              <img 
+                :src="news[0].imageUrl" 
+                :alt="news[0].title"
+                class="w-full h-full object-cover object-center"
+                style="width: 100%; height: 100%; object-fit: cover;"
+                loading="lazy"
+              />
+            </div>
           </div>
           <div class="md:w-2/3">
             <div class="flex items-center space-x-2 mb-3">
@@ -193,11 +197,15 @@ onUnmounted(() => {
       >
         <div class="flex flex-col sm:flex-row sm:space-x-4">
           <div class="sm:w-1/4 mb-4 sm:mb-0">
-            <img 
-              :src="article.imageUrl" 
-              :alt="article.title"
-              class="w-full h-32 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow duration-200"
-            />
+            <div class="w-full h-full rounded-lg shadow-md group-hover:shadow-lg overflow-hidden">
+              <img 
+                :src="article.imageUrl" 
+                :alt="article.title"
+                class="w-full h-full object-cover object-center"
+                style="width: 100%; height: 100%; object-fit: cover;"
+                loading="lazy"
+              />
+            </div>
           </div>
           <div class="sm:w-3/4">
             <div class="flex items-center space-x-2 mb-3">
