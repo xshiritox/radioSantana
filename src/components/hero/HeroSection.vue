@@ -41,7 +41,7 @@
         <!-- Subtitle -->
         <p class="text-2xl md:text-3xl font-medium mb-8 leading-relaxed relative group">
           <span class="relative inline-block">
-            <span class="relative z-10 bg-gradient-to-r from-white via-silver-200 to-silver-300 bg-clip-text text-transparent drop-shadow-lg">
+            <span class="relative z-10 bg-gradient-to-r from-white via-silver-200 to-silver-300 bg-clip-text text-transparent">
               La forma <span class="text-silver-300 font-bold text-3xl md:text-4xl relative">+</span> fresca de escuchar radio
             </span>
             <span class="absolute inset-0 bg-gradient-to-r from-silver-400 to-silver-600 rounded-full blur opacity-70 group-hover:opacity-100 transition-all duration-500"></span>

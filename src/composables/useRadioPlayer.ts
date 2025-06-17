@@ -1,6 +1,6 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import type { Track, RadioStats } from '../types/radio';
-import radioSong from '../assets/RadioSantana.mp3';
+import radioSong from '../assets/RadioVirtualSantana.mp3';
 
 export function useRadioPlayer() {
   const audio = ref<HTMLAudioElement | null>(null);
@@ -25,7 +25,7 @@ export function useRadioPlayer() {
     audio.value = new Audio();
     audio.value.crossOrigin = 'anonymous';
     audio.value.preload = 'auto';
-    audio.value.loop = true; // Hacer que el audio se repita en bucle
+    audio.value.loop = false; // Desactivar la reproducción en bucle
     audio.value.volume = volume.value;
 
     audio.value.addEventListener('loadstart', () => {
@@ -130,7 +130,7 @@ export function useRadioPlayer() {
       duration: 210,
       isPlaying: isPlaying.value,
       startTime: new Date(),
-      coverUrl: 'https://play-lh.googleusercontent.com/1wKUUHWoASPyJRQzd_WSXG1jXHaNGIolS9pV5-K_g3HLqGcgX4Cu6garNwXfrJrNnzq-=w240-h480'
+      coverUrl: 'https://i.pinimg.com/736x/aa/01/87/aa01874732f0d42fabc17c0b1c5af3c5.jpg'
     };
   };
 

@@ -12,7 +12,7 @@ import { NewspaperIcon, CalendarIcon, UserIcon } from '@heroicons/vue/24/outline
 import type { NewsItem } from '../../types/radio';
 
 // Importar imagen por defecto
-import new1 from '../../assets/new1.jpg';
+import defaultNewsImage from '../../assets/logo.jpg';
 
 const news = ref<NewsItem[]>([]);
 const isLoading = ref(false);
@@ -33,7 +33,7 @@ const processNewsDocuments = (docs: any[]): NewsItem[] => {
       author: data.author || 'Anónimo',
       publishedAt: data.publishedAt?.toDate?.() || new Date(),
       category: data.category || 'General',
-      imageUrl: data.imageUrl || new1
+      imageUrl: data.imageUrl || defaultNewsImage
     };
   });
 };

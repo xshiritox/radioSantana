@@ -32,8 +32,8 @@ const handleVolumeChange = (event: Event) => {
     <!-- Player Header -->
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center space-x-3">
-        <div class="w-12 h-12 rounded-full flex items-center justify-center animate-pulse-slow" style="background-image: linear-gradient(135deg, #FFD700 0%, #DAA520 50%, #B8860B 100%);">
-          <span class="text-xl font-bold">📻</span>
+        <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-gold-400 shadow-lg">
+          <img src="/src/assets/logo.jpg" alt="Logo RadioVirtual Santana" class="w-full h-full object-cover" />
         </div>
         <div>
           <h3 class="text-2xl font-bold text-white">

@@ -9,7 +9,7 @@ import { db } from '../config/firebase';
 import type { Show } from '../types/radio';
 
 // Importar imagen por defecto
-import new1 from '../assets/new1.jpg';
+import defaultShowImage from '../assets/logo.jpg';
 
 export function useShows() {
   const shows = ref<Show[]>([]);
@@ -38,7 +38,7 @@ export function useShows() {
             endTime: data.endTime,
             days: data.days,
             isLive: data.isLive || false,
-            imageUrl: data.imageUrl || new1
+            imageUrl: data.imageUrl || defaultShowImage
           });
         });
         

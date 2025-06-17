@@ -8,7 +8,7 @@ const socialLinks = [
 ];
 
 const contactInfo = {
-  phone: '+57 310 603584 / +53 53547990',
+  phone: '+57 310 603584',
   email: 'radiosantana.nm@gmail.com',
   address: 'Colombia'
 };
@@ -22,8 +22,8 @@ const contactInfo = {
         <!-- Radio Info -->
         <div class="space-y-4">
           <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 bg-gold-gradient rounded-full flex items-center justify-center">
-              <span class="text-xl font-bold">📻</span>
+            <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-gold-400 shadow">
+              <img src="/src/assets/logo.jpg" alt="Logo RadioVirtual Santana" class="w-full h-full object-cover" />
             </div>
             <h3 class="text-xl font-bold text-white">
               RadioVirtual Santana
