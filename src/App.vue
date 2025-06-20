@@ -15,20 +15,20 @@ import AdminPanel from './components/admin/AdminPanel.vue';
 
 // Configuración de metadatos SEO
 useHead({
-  title: 'Radio Santana - Tu estación de música favorita',
+  title: 'Radio Santana',
   meta: [
     { name: 'description', content: 'Disfruta de la mejor programación musical en Radio Santana. Música en vivo, noticias y más.' },
     { name: 'keywords', content: 'radio, música, estación, en vivo, entretenimiento, Radio Santana' },
-    { property: 'og:title', content: 'Radio Santana - Tu estación de música favorita' },
+    { property: 'og:title', content: 'Radio Santana' },
     { property: 'og:description', content: 'Disfruta de la mejor programación musical en Radio Santana' },
     { property: 'og:type', content: 'website' },
-    { property: 'og:url', content: 'https://tudominio.com' },
+    { property: 'og:url', content: 'https://radiosantana.netlify.app' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'robots', content: 'index, follow' },
     { name: 'author', content: 'Radio Santana' },
   ],
   link: [
-    { rel: 'canonical', href: 'https://tudominio.com' },
+    { rel: 'canonical', href: 'https://radiosantana.netlify.app' },
   ]
 });
 
