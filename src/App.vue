@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
+import { useHead } from '@vueuse/head';
 import AppHeader from './components/layout/AppHeader.vue';
 import AppFooter from './components/layout/AppFooter.vue';
 import HeroSection from './components/hero/HeroSection.vue';
@@ -11,6 +12,25 @@ import LoginPanel from './components/auth/LoginPanel.vue';
 import MusicRequests from './components/requests/MusicRequests.vue';
 import NewsSection from './components/news/NewsSection.vue';
 import AdminPanel from './components/admin/AdminPanel.vue';
+
+// Configuración de metadatos SEO
+useHead({
+  title: 'Radio Santana - Tu estación de música favorita',
+  meta: [
+    { name: 'description', content: 'Disfruta de la mejor programación musical en Radio Santana. Música en vivo, noticias y más.' },
+    { name: 'keywords', content: 'radio, música, estación, en vivo, entretenimiento, Radio Santana' },
+    { property: 'og:title', content: 'Radio Santana - Tu estación de música favorita' },
+    { property: 'og:description', content: 'Disfruta de la mejor programación musical en Radio Santana' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://tudominio.com' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'robots', content: 'index, follow' },
+    { name: 'author', content: 'Radio Santana' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://tudominio.com' },
+  ]
+});
 
 // Smooth scroll behavior for navigation links
 onMounted(() => {
