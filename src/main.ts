@@ -8,6 +8,8 @@ const head = createHead()
 
 app.use(head)
 
+
+
 // Global error handler
 app.config.errorHandler = (err: unknown, info: unknown) => {
   console.error('Global error:', err, info)

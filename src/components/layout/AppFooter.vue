@@ -94,31 +94,12 @@ const contactInfo = {
           </div>
         </div>
 
-        <!-- Social Media -->
-        <div class="space-y-4">
-          <h4 class="text-lg font-semibold text-gold-400">Síguenos</h4>
-          <div class="flex flex-wrap gap-3">
-            <a
-              v-for="social in socialLinks"
-              :key="social.name"
-              :href="social.url"
-              class="w-10 h-10 bg-silver-800 hover:bg-gold-gradient rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-110"
-              :title="social.name"
-            >
-              <span class="text-lg">{{ social.icon }}</span>
-            </a>
-          </div>
-          <p class="text-xs text-silver-400">
-            Mantente conectado con nosotros en todas nuestras redes sociales
-          </p>
-        </div>
       </div>
-
       <!-- Bottom Bar -->
       <div class="border-t border-silver-800 mt-8 pt-6">
         <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p class="text-sm text-silver-400">
-            © {{ new Date().getFullYear() }} RadioVirtual Santana. Todos los derechos reservados.
+            {{ new Date().getFullYear() }} RadioVirtual Santana. Todos los derechos reservados.
           </p>
           <div class="flex items-center space-x-6 text-xs text-silver-400">
             <a href="#" class="hover:text-gold-400 transition-colors">Política de Privacidad</a>
@@ -129,6 +110,4 @@ const contactInfo = {
       </div>
     </div>
   </footer>
-
-
 </template>

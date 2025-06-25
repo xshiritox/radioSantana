@@ -1,7 +1,6 @@
 import { initializeApp, type FirebaseApp, getApps, getApp } from 'firebase/app';
 import { 
   getFirestore, 
-  enableIndexedDbPersistence, 
   type Firestore,
   doc, // Used for creating document references
   onSnapshot,
@@ -135,116 +134,12 @@ function checkAuthConnection(): Promise<boolean> {
   });
 }
 
-// Analytics placeholder - will be initialized in the browser context
-declare global {
-  interface Window {
-    gtag: (...args: any[]) => void;
-    dataLayer: any[];
-  }
-}
-
-// Initialize analytics as null by default
-let analytics: any = null;
-
-// Analytics functions
-export const logAnalyticsEvent = (eventName: string, eventParams?: Record<string, any>) => {
-  if (typeof window === 'undefined' || !window.gtag) return;
-  
-  try {
-    window.gtag('event', eventName, eventParams);
-  } catch (error) {
-    console.error('Error logging analytics event:', error);
-  }
-};
-
-// Initialize analytics if in browser
-if (typeof window !== 'undefined') {
-  try {
-    // Add Google Analytics script
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${firebaseConfig.measurementId}`;
-    document.head.appendChild(script);
-
-    // Initialize gtag
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function(...args: any[]) {
-      window.dataLayer.push(args);
-    };
-    
-    window.gtag('js', new Date());
-    window.gtag('config', firebaseConfig.measurementId, {
-      send_page_view: true
-    });
-    
-    console.log('Google Analytics initialized successfully');
-    
-    // Set up auth state tracking
-    auth.onAuthStateChanged((user: any) => {
-      if (user) {
-        // Set user ID for analytics
-        window.gtag('set', 'user_properties', {
-          user_id: user.uid,
-          email: user.email || '',
-          email_verified: user.emailVerified,
-          last_login: new Date().toISOString(),
-          account_created: user.metadata?.creationTime || new Date().toISOString(),
-          last_sign_in: user.metadata?.lastSignInTime || new Date().toISOString()
-        });
-        
-        // Log login event with additional context
-        logAnalyticsEvent('login', {
-          method: user.providerData?.[0]?.providerId || 'email',
-          email: user.email || '',
-          is_new_user: user.metadata?.creationTime === user.metadata?.lastSignInTime
-        });
-        
-        // Log page view after login
-        logAnalyticsEvent('page_view');
-      } else {
-        // User signed out
-        logAnalyticsEvent('logout');
-        
-        // Reset user ID in analytics
-        window.gtag('set', 'user_properties', {
-          user_id: null,
-          email: null,
-          email_verified: null,
-          last_login: null
-        });
-      }
-    });
-    
-    // Log page views on route changes if using a router
-    if (window.location) {
-      logAnalyticsEvent('page_view', {
-        page_title: document.title,
-        page_location: window.location.href,
-        page_path: window.location.pathname
-      });
-      
-      // Optional: Listen for route changes if using a SPA router
-      window.addEventListener('popstate', () => {
-        logAnalyticsEvent('page_view', {
-          page_title: document.title,
-          page_location: window.location.href,
-          page_path: window.location.pathname
-        });
-      });
-    }
-    
-  } catch (error) {
-    console.error('Error initializing Analytics:', error);
-  }
-} else if (typeof window !== 'undefined') {
-  console.warn('Google Analytics not initialized - missing measurementId in firebaseConfig');
-}
+// Analytics deshabilitado por solicitud del usuario
 
 export { 
   app, 
   db, 
-  auth, 
-  analytics,
+  auth,
   checkFirestoreConnection, 
   checkAuthConnection
 };
@@ -252,51 +147,12 @@ export {
 // Configurar persistencia al inicio
 async function initializePersistence() {
   try {
-    // Primero configuramos la persistencia de Auth
+    // Configuramos la persistencia de Auth
     await setPersistence(auth, browserLocalPersistence);
     
-    // Verificamos si estamos en un entorno de navegador
-    if (typeof window === 'undefined') {
-      console.log('Entorno sin navegador, omitiendo persistencia de Firestore');
-      return;
-    }
-
-    // Verificar si ya hay una instancia de Firestore con persistencia habilitada
-    if (window.indexedDB) {
-      try {
-        // Intentar limpiar datos antiguos si existen
-        const dbs = await window.indexedDB.databases();
-        const firestoreDB = dbs.find(db => db && db.name && db.name.includes('firestore'));
-        
-        if (firestoreDB && firestoreDB.name) {
-          console.log('Limpiando caché de Firestore...');
-          await window.indexedDB.deleteDatabase(firestoreDB.name);
-        }
-      } catch (cleanupError) {
-        console.warn('No se pudo limpiar el caché de Firestore:', cleanupError);
-      }
-    }
-
-    // Configurar la persistencia de Firestore con manejo de errores mejorado
-    try {
-      await enableIndexedDbPersistence(db, {
-        forceOwnership: true
-      });
-      console.log('Persistencia de Firestore habilitada correctamente');
-    } catch (error: any) {
-      if (error.code === 'failed-precondition') {
-        // Múltiples pestañas abiertas
-        console.warn('Persistencia de Firestore no disponible en múltiples pestañas');
-      } else if (error.code === 'unimplemented') {
-        // Navegador no compatible
-        console.warn('El navegador actual no soporta la persistencia de Firestore');
-      } else if (error.code === 'failed-precondition') {
-        // Datos de versión anterior
-        console.warn('Datos de Firestore de una versión anterior. Se usará el modo sin persistencia.');
-      } else {
-        console.warn('Error al habilitar persistencia de Firestore:', error);
-      }
-    }
+    // Deshabilitamos la persistencia de Firestore explícitamente
+    console.log('Persistencia de Firestore deshabilitada');
+    
   } catch (error) {
     console.error('Error en la inicialización de persistencia:', error);
   }
@@ -344,7 +200,7 @@ export async function checkConnectivity(): Promise<boolean> {
   }
 }
 
-// Configurar monitoreo de conexión
+// Configurar monitoreo de autenticación
 if (typeof window !== 'undefined') {
   // Monitorear estado de autenticación
   auth.onAuthStateChanged((user) => {
@@ -353,16 +209,6 @@ if (typeof window !== 'undefined') {
       console.log('Usuario:', user.email);
     }
   });
-
-  // Monitorear estado de conexión
-  import('firebase/database')
-    .then(({ getDatabase, ref, onValue }) => {
-      const dbRef = ref(getDatabase(app), '.info/connected');
-      onValue(dbRef, (snap) => {
-        console.log('Estado de conexión a Firebase:', snap.val() ? 'Conectado' : 'Desconectado');
-      });
-    })
-    .catch(console.error);
 }
 
 export default app;
