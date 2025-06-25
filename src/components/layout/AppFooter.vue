@@ -1,10 +1,32 @@
 <script setup lang="ts">
+// Import Font Awesome CSS
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 const socialLinks = [
-  { name: 'Facebook', url: '#', icon: '📘' },
-  { name: 'Instagram', url: '#', icon: '📷' },
-  { name: 'Twitter', url: '#', icon: '🐦' },
-  { name: 'YouTube', url: '#', icon: '📺' },
-  { name: 'WhatsApp', url: 'https://wa.me/573106035384?text=Hola%20vengo%20desde%20Radio%20Santana', icon: '💬' }
+  { 
+    name: 'WhatsApp', 
+    url: 'https://wa.me/573106035384?text=Hola%20vengo%20desde%20Radio%20Santana', 
+    icon: 'fab fa-whatsapp',
+    bgColor: 'hover:bg-green-500',
+    textColor: 'text-green-400',
+    text: 'WhatsApp'
+  },
+  { 
+    name: 'Instagram', 
+    url: '#', 
+    icon: 'fab fa-instagram',
+    bgColor: 'hover:bg-pink-600',
+    textColor: 'text-pink-400',
+    text: 'Instagram'
+  },
+  { 
+    name: 'Facebook', 
+    url: '#', 
+    icon: 'fab fa-facebook-f',
+    bgColor: 'hover:bg-blue-600',
+    textColor: 'text-blue-400',
+    text: 'Facebook'
+  }
 ];
 
 const contactInfo = {
@@ -18,9 +40,9 @@ const contactInfo = {
   <footer class="bg-gradient-to-b from-silver-900 to-black text-white">
     <div class="container mx-auto px-4 py-12">
       <!-- Main Footer Content -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
         <!-- Radio Info -->
-        <div class="space-y-4">
+        <div class="space-y-4 lg:col-span-2">
           <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-gold-400 shadow">
               <img src="/src/assets/logo.jpg" alt="Logo RadioVirtual Santana" class="w-full h-full object-cover" />
@@ -91,6 +113,29 @@ const contactInfo = {
               <span>📍</span>
               <span class="text-silver-300">{{ contactInfo.address }}</span>
             </div>
+          </div>
+        </div>
+
+        <!-- Social Media Section -->
+        <div class="space-y-4">
+          <h4 class="text-lg font-semibold text-gold-400">Síguenos</h4>
+          <div class="space-y-3">
+            <a 
+              v-for="social in socialLinks" 
+              :key="social.name"
+              :href="social.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center space-x-2 px-3 py-2 rounded-md bg-silver-800/20 hover:bg-opacity-100 transition-all duration-200 group text-sm"
+              :class="[social.bgColor, social.textColor]"
+            >
+              <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-all">
+                <i :class="social.icon" class="text-xs"></i>
+              </div>
+              <div class="font-medium">
+                {{ social.text }}
+              </div>
+            </a>
           </div>
         </div>
 
