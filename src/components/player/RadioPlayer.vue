@@ -32,8 +32,18 @@ const handleVolumeChange = (event: Event) => {
     <!-- Player Header -->
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center space-x-3">
-        <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-gold-400 shadow-lg">
-          <img src="/src/assets/logo.jpg" alt="Logo RadioVirtual Santana" class="w-full h-full object-cover" />
+        <div class="relative group">
+          <!-- Contenedor del efecto de brillo -->
+          <div class="absolute -inset-0.5 bg-gradient-to-r from-gold-400 to-gold-200 rounded-full opacity-60 blur-[4px] group-hover:opacity-80 transition-opacity duration-300"></div>
+          
+          <!-- Contenedor principal del logo -->
+          <div class="relative w-12 h-12 rounded-full overflow-hidden border border-gold-300 shadow-lg">
+            <img 
+              src="/src/assets/logo.webp" 
+              alt="Logo RadioVirtual Santana" 
+              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            />
+          </div>
         </div>
         <div>
           <h3 class="text-2xl font-bold text-white">

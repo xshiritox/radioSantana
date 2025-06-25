@@ -9,7 +9,7 @@ import { db } from '../config/firebase';
 import type { Show } from '../types/radio';
 
 // Importar imagen por defecto
-import defaultShowImage from '../assets/logo.jpg';
+import defaultShowImage from '../assets/logo.webp';
 
 export function useShows() {
   const shows = ref<Show[]>([]);

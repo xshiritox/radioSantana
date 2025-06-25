@@ -12,7 +12,7 @@ import { NewspaperIcon, CalendarIcon, UserIcon } from '@heroicons/vue/24/outline
 import type { NewsItem } from '../../types/radio';
 
 // Importar imagen por defecto
-import defaultNewsImage from '../../assets/logo.jpg';
+import defaultNewsImage from '../../assets/logo.webp';
 
 const news = ref<NewsItem[]>([]);
 const isLoading = ref(false);
