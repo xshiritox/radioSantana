@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "type-check": "vue-tsc --noEmit",
+    "build": "vite build",
     "preview": "vite preview",
-    "netlify-build": "npm install && npm run build"
+    "netlify-build": "npm install && npm run type-check && npm run build"
   },
   "engines": {
     "node": ">=18.0.0",
