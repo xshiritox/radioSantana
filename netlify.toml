@@ -1,15 +1,95 @@
+# ==============================================================================
+# CONFIGURACIÓN GENERAL
+# ==============================================================================
+
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
+  YARN_VERSION = "1.22.19"
+  NODE_ENV = "production"
+
+# ==============================================================================
+# REDIRECCIONES
+# ==============================================================================
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+
+# Redirección de dominio www a no-www
+[[redirects]]
+  from = "https://www.radiosantana.netlify.app/*"
+  to = "https://radiosantana.netlify.app/:splat"
+  status = 301
+  force = true
+
+# Redirección de HTTP a HTTPS
+[[redirects]]
+  from = "http://radiosantana.netlify.app/*"
+  to = "https://radiosantana.netlify.app/:splat"
+  status = 301
+  force = true
+
+# ==============================================================================
+# ENCABEZADOS DE SEGURIDAD Y CACHÉ
+# ==============================================================================
+# Configuración de caché para recursos estáticos
 [[headers]]
-  for = "/sitemap.xml"
+  for = "/*.js"
   [headers.values]
-    Content-Type = "application/xml; charset=utf-8"
-    X-Content-Type-Options = "nosniff"
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/sitemap.xsl"
+  for = "/*.css"
   [headers.values]
-    Content-Type = "application/xslt+xml; charset=utf-8"
-    X-Content-Type-Options = "nosniff"
+    Cache-Control = "public, max-age=31536000, immutable"
 
+[[headers]]
+  for = "/*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.woff"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.ttf"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.eot"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Configuración de seguridad para todos los archivos
 [[headers]]
   for = "/*"
   [headers.values]
@@ -17,6 +97,129 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval';"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Feature-Policy = "geolocation 'none'; microphone 'none'; camera 'none'"
+
+# Configuración específica para sitemap.xml
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Content-Type = "application/xml; charset=utf-8"
+    X-Content-Type-Options = "nosniff"
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+# Configuración específica para sitemap.xsl
+[[headers]]
+  for = "/sitemap.xsl"
+  [headers.values]
+    Content-Type = "application/xslt+xml; charset=utf-8"
+    X-Content-Type-Options = "nosniff"
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+# Configuración específica para robots.txt
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+    X-Content-Type-Options = "nosniff"
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+# Configuración específica para manifest.json
+[[headers]]
+  for = "/site.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json; charset=utf-8"
+    X-Content-Type-Options = "nosniff"
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+# Configuración específica para archivos de datos
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    Content-Type = "application/json; charset=utf-8"
+    X-Content-Type-Options = "nosniff"
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+# ==============================================================================
+# CONFIGURACIÓN DE FUNCIONES (SI APLICA)
+# ==============================================================================
+[functions]
+  # Directorio donde se encuentran las funciones serverless
+  directory = "netlify/functions"
+  # Tamaño máximo del paquete (en MB)
+  node_bundler = "esbuild"
+  external_node_modules = ["@netlify/functions"]
+
+# ==============================================================================
+# CONFIGURACIÓN DE DESPLIEGUE CONTINUO
+# ==============================================================================
+[build.environment]
+  # Variables de entorno para el proceso de construcción
+  NODE_ENV = "production"
+  VITE_API_URL = "https://api.radiosantana.netlify.app"
+  VITE_GA_TRACKING_ID = "" # Agregar tu ID de Google Analytics
+
+# Configuración específica para el contexto de producción
+[context.production]
+  command = "npm run build"
+  publish = "dist"
+  [context.production.environment]
+    NODE_ENV = "production"
+    VITE_API_URL = "https://api.radiosantana.netlify.app"
+
+# Configuración específica para el contexto de desarrollo
+[context.develop]
+  command = "npm run dev"
+  [context.develop.environment]
+    NODE_ENV = "development"
+    VITE_API_URL = "http://localhost:3000"
+
+# Configuración específica para ramas de desarrollo
+[context.deploy-preview]
+  command = "npm run build"
+  publish = "dist"
+  [context.deploy-preview.environment]
+    NODE_ENV = "staging"
+    VITE_API_URL = "https://staging-api.radiosantana.netlify.app"
+
+# ==============================================================================
+# CONFIGURACIÓN DE PLUGINS
+# ==============================================================================
+# Ejemplo de configuración de plugins de Netlify
+# [[plugins]]
+#   package = "@netlify/plugin-sitemap"
+#   [plugins.inputs]
+#     buildPath = "dist/sitemap.xml"
+#     exclude = ["/admin/*", "/private/*"]
+
+# [[plugins]]
+#   package = "@netlify/plugin-lighthouse"
+#   [plugins.inputs.thresholds]
+#     performance = 0.9
+#     accessibility = 0.9
+#     best-practices = 0.9
+#     seo = 0.9
+#     pwa = 0.9
+
+# ==============================================================================
+# CONFIGURACIÓN ADICIONAL
+# ==============================================================================
+# Configuración de redirecciones personalizadas
+# [[redirects]]
+#   from = "/blog/:year/:month/:day/:slug"
+#   to = "/blog/:slug"
+#   status = 301
+
+# Configuración de redirecciones para versiones antiguas de la web
+# [[redirects]]
+#   from = "/old-path/*"
+#   to = "/new-path/:splat"
+#   status = 301
+
+# ==============================================================================
+# FIN DEL ARCHIVO NETLIFY.TOML
+# ==============================================================================
 
 # Redirecciones para asegurar que el sitemap sea accesible
 [[redirects]]

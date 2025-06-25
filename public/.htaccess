@@ -1,0 +1,245 @@
+# ==============================================================================
+# CONFIGURACIÓN DEL SERVIDOR
+# ==============================================================================
+
+# Forzar HTTPS
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off [OR]
+  RewriteCond %{HTTP_HOST} ^www\. [NC]
+  RewriteRule ^ https://radiosantana.netlify.app%{REQUEST_URI} [L,NE,R=301]
+</IfModule>
+
+# Redirigir a www o no-www (elegir una opción)
+# Opción 1: Redirigir a www
+# RewriteCond %{HTTP_HOST} !^www\. [NC]
+# RewriteRule ^(.*)$ https://www.radiosantana.netlify.app/$1 [L,R=301]
+
+# Opción 2: Redirigir a no-www (recomendado)
+RewriteCond %{HTTP_HOST} ^www\.radiosantana\.netlify\.app [NC]
+RewriteRule ^(.*)$ https://radiosantana.netlify.app/$1 [L,R=301]
+
+# ==============================================================================
+# COMPRESIÓN Y CACHÉ
+# ==============================================================================
+
+<IfModule mod_deflate.c>
+  # Comprimir texto, HTML, JavaScript, CSS, XML y fuentes
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+  AddOutputFilterByType DEFLATE application/x-font
+  AddOutputFilterByType DEFLATE application/x-font-opentype
+  AddOutputFilterByType DEFLATE application/x-font-otf
+  AddOutputFilterByType DEFLATE application/x-font-truetype
+  AddOutputFilterByType DEFLATE application/x-font-ttf
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE font/opentype
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE font/ttf
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE image/x-icon
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/xml
+
+  # Eliminar navegador bugs (solo para navegadores antiguos)
+  BrowserMatch ^Mozilla/4\.0[678] no-gzip
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+  Header append Vary User-Agent
+</IfModule>
+
+# Configuración de caché para tipos de archivos
+<IfModule mod_expires.c>
+  ExpiresActive On
+  
+  # Imágenes
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+
+  # Vídeo
+  ExpiresByType video/mp4 "access plus 1 year"
+  ExpiresByType video/mpeg "access plus 1 year"
+  ExpiresByType video/webm "access plus 1 year"
+
+  # Fuentes
+  ExpiresByType font/ttf "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType application/font-woff "access plus 1 year"
+
+  # CSS, JavaScript
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType text/javascript "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+
+  # Otros
+  ExpiresByType application/pdf "access plus 1 month"
+  ExpiresByType application/x-shockwave-flash "access plus 1 month"
+  
+  # Configuración por defecto
+  ExpiresDefault "access plus 2 days"
+</IfModule>
+
+# ==============================================================================
+# SEGURIDAD
+# ==============================================================================
+
+# Proteger archivos sensibles
+<FilesMatch "^\.|^composer\.(json|lock)|package(-lock)?\.json$|web\.config$|yarn\.lock$|package-lock\.json$|\.env$|README\.md$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# Prevenir acceso a directorios
+Options -Indexes
+
+# Prevenir hotlinking
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_REFERER} !^$
+  RewriteCond %{HTTP_REFERER} !^https?://(www\.)?radiosantana\.netlify\.app [NC]
+  RewriteRule \.(jpe?g|png|gif|webp|mp3|mp4|pdf)$ - [NC,F,L]
+</IfModule>
+
+# Headers de seguridad
+<IfModule mod_headers.c>
+  # Protección XSS
+  Header set X-XSS-Protection "1; mode=block"
+  Header set X-Content-Type-Options "nosniff"
+  
+  # Prevenir clickjacking
+  Header always append X-Frame-Options SAMEORIGIN
+  
+  # HSTS (HTTP Strict Transport Security)
+  Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  
+  # CSP (Content Security Policy) - Ajustar según necesidades
+  Header set Content-Security-Policy "default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval';"
+  
+  # Referrer Policy
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  
+  # Feature Policy
+  Header set Feature-Policy "geolocation 'self'; microphone 'none'; camera 'none'"
+  
+  # Permisos Policy (reemplaza Feature Policy en navegadores modernos)
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# ==============================================================================
+# RENDIMIENTO
+# ==============================================================================
+
+# Habilitar Keep-Alive
+<IfModule mod_headers.c>
+  Header set Connection keep-alive
+</IfModule>
+
+
+# ==============================================================================
+# MANEJO DE ERRORES
+# ==============================================================================
+ErrorDocument 400 /error/400.html
+ErrorDocument 401 /error/401.html
+ErrorDocument 403 /error/403.html
+ErrorDocument 404 /error/404.html
+ErrorDocument 500 /error/500.html
+
+# ==============================================================================
+# CONFIGURACIONES ESPECÍFICAS PARA NETLIFY
+# ==============================================================================
+# Redirección para SPA (Single Page Application)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-l
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# ==============================================================================
+# COMPRESIÓN PARA TIPOS DE ARCHIVO ADICIONALES
+# ==============================================================================
+<IfModule mod_mime.c>
+  AddType application/x-font-woff .woff
+  AddType application/x-font-woff2 .woff2
+  AddType application/vnd.ms-fontobject .eot
+  AddType application/x-font-ttf .ttf
+  AddType font/opentype .otf
+  AddType image/svg+xml .svg
+  AddType application/x-web-app-manifest+json .webapp
+  AddType text/cache-manifest .appcache
+  AddType text/x-component .htc
+  AddType application/x-chrome-extension .crx
+  AddType application/x-opera-extension .oex
+  AddType application/x-xpinstall .xpi
+  AddType application/octet-stream .safariextz
+  AddType application/x-web-app-manifest+json .webapp
+  AddType text/xml .xml
+  AddType application/json .json
+</IfModule>
+
+# ==============================================================================
+# CONFIGURACIÓN DE CORS (Cross-Origin Resource Sharing)
+# ==============================================================================
+<IfModule mod_headers.c>
+  <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|js|json|xml)$">
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+</IfModule>
+
+# ==============================================================================
+# COMPRESIÓN ADICIONAL
+# ==============================================================================
+<IfModule mod_filter.c>
+  AddOutputFilterByType DEFLATE application/atom+xml
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE application/ld+json
+  AddOutputFilterByType DEFLATE application/manifest+json
+  AddOutputFilterByType DEFLATE application/rdf+xml
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/schema+json
+  AddOutputFilterByType DEFLATE application/vnd.geo+json
+  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+  AddOutputFilterByType DEFLATE application/x-font-ttf
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/x-web-app-manifest+json
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE font/eot
+  AddOutputFilterByType DEFLATE font/opentype
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE image/bmp
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE image/vnd.microsoft.icon
+  AddOutputFilterByType DEFLATE image/x-icon
+  AddOutputFilterByType DEFLATE text/cache-manifest
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/vcard
+  AddOutputFilterByType DEFLATE text/vnd.rim.location.xloc
+  AddOutputFilterByType DEFLATE text/vtt
+  AddOutputFilterByType DEFLATE text/x-component
+  AddOutputFilterByType DEFLATE text/x-cross-domain-policy
+  AddOutputFilterByType DEFLATE text/xml
+</IfModule>
+
+# ==============================================================================
+# FIN DEL ARCHIVO .htaccess
+# ==============================================================================

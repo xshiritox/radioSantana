@@ -1,7 +1,12 @@
 // Extender la interfaz Window con propiedades personalizadas
 declare global {
   interface Window {
-    // Aquí puedes agregar propiedades globales de window si son necesarias
+    // Propiedades para Google Analytics
+    dataLayer: any[];
+    gtag: (...args: any[]) => void;
+    
+    // Otras propiedades globales si son necesarias
+    [key: string]: any;
   }
 }
 

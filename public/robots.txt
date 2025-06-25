@@ -1,4 +1,159 @@
+# robots.txt para RadioVirtual Santana
+# Última actualización: 2025-06-25
+# https://www.robotstxt.org/robotstxt.html
+
+# ===============================================================================
+# Configuración global para todos los rastreadores
+# ===============================================================================
 User-agent: *
+Allow: /$
+Allow: /index.html$
+Allow: /?*$
+Allow: /#*$
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.webp$
+Allow: /*.jpg$
+Allow: /*.png$
+Allow: /*.svg$
+Allow: /*.woff2$
+Allow: /*.woff$
+Allow: /*.ttf$
+Disallow: /private/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /*?*
+Disallow: /*/print/
+Disallow: /*?*print=
+Disallow: /*?*preview=
+Disallow: /*?*preview_id=
+Disallow: /*?*preview_nonce=
+Disallow: /*?*preview=true
+
+# ===============================================================================
+# Configuración específica para motores de búsqueda
+# ===============================================================================
+# Google
+User-agent: Googlebot
+Allow: /*.js
+Allow: /*.css
+Allow: /*.webp
+Allow: /*.jpg
+Allow: /*.png
+
+# Google Imágenes
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /assets/
+Disallow: /private-images/
+
+# Bing
+User-agent: bingbot
+Crawl-delay: 5
+Allow: /*.js
+Allow: /*.css
+Allow: /*.webp
+Allow: /*.jpg
+Allow: /*.png
+
+# ===============================================================================
+# Configuración para rastreadores específicos
+# ===============================================================================
+# Rastreadores de publicidad
+User-agent: AdsBot-Google
 Allow: /
 
+# Rastreadores de noticias
+User-agent: Googlebot-News
+Allow: /
+
+# Rastreadores de video
+User-agent: Googlebot-Video
+Allow: /
+
+# Rastreadores de búsqueda de imágenes
+User-agent: Googlebot-Image
+Allow: /images/
+Disallow: /private-images/
+
+# ===============================================================================
+# Configuración de velocidad de rastreo
+# ===============================================================================
+# Velocidad de rastreo (solicitudes por segundo)
+User-agent: *
+Crawl-delay: 10
+
+# ===============================================================================
+# Sitemaps
+# ===============================================================================
 Sitemap: https://radiosantana.netlify.app/sitemap.xml
+
+# ===============================================================================
+# Host preferido
+# ===============================================================================
+Host: https://radiosantana.netlify.app
+
+# ===============================================================================
+# Configuración de parámetros de URL
+# ===============================================================================
+# Parámetros de URL que no deben ser rastreados
+User-agent: *
+Disallow: /*?*utm_
+Disallow: /*?*gclid=
+Disallow: /*?*fbclid=
+Disallow: /*?*msclkid=
+Disallow: /*?*mc_eid=
+Disallow: /*?*sessionid=
+
+# ===============================================================================
+# Configuración de archivos
+# ===============================================================================
+# Evitar que se indexen archivos de desarrollo
+Disallow: /*.map$
+Disallow: /*.sql$
+Disallow: /*.log$
+Disallow: /*.env$
+Disallow: /*.gitignore$
+Disallow: /*.editorconfig$
+Disallow: /*.eslintrc$
+Disallow: /*.babelrc$
+Disallow: /*.npmrc$
+Disallow: /*.yarnrc$
+Disallow: /*.lock$
+
+# ===============================================================================
+# Configuración para archivos de sistema
+# ===============================================================================
+# Evitar que se indexen archivos de sistema
+Disallow: /node_modules/
+Disallow: /vendor/
+Disallow: /wp-includes/
+Disallow: /wp-admin/
+Disallow: /wp-content/plugins/
+Disallow: /wp-content/themes/
+Disallow: /wp-json/
+Disallow: /xmlrpc.php
+Disallow: /wp-login.php
+Disallow: /wp-register.php
+
+# ===============================================================================
+# Configuración de caché
+# ===============================================================================
+# Indicar a los rastreadores que no guarden en caché ciertos tipos de archivos
+User-agent: *
+Disallow: /*.css$ 
+Disallow: /*.js$
+
+# ===============================================================================
+# Configuración de idiomas (si aplica)
+# ===============================================================================
+# Si tienes contenido en múltiples idiomas, puedes usar hreflang en lugar de bloquear
+# User-agent: *
+# Allow: /es/
+# Allow: /en/
+# Disallow: /fr/
+
+# ===============================================================================
+# Fin del archivo robots.txt
+# ===============================================================================

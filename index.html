@@ -1,41 +1,221 @@
 <!doctype html>
 <html lang="es">
   <head>
+    <!-- Metadatos básicos -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/webp" href="/logo.webp" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="RadioVirtual Santana - Tu estación de radio favorita las 24 horas del día. Música variada, programas en vivo y entretenimiento para toda la familia." />
-    <meta name="keywords" content="radio online, radio santana, música en vivo, radio streaming, música variada" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <!-- Meta Description & Keywords -->
+    <meta name="description" content="Disfruta de la mejor programación musical en RadioVirtual Santana. Música variada, programas en vivo y el mejor entretenimiento las 24 horas del día. Escúchanos en línea desde cualquier lugar del mundo." />
+    <meta name="keywords" content="radio en línea, música en vivo, radio santana, radio virtual, programas de radio, radio colombiana, emisora en vivo, radio online, radio 24/7, radio santana en vivo, radio santana colombia, radio santana online, escuchar radio santana, radio santana web, radio santana música, radio santana en directo, radio santana por internet" />
+    
+    <!-- Author & Copyright -->
     <meta name="author" content="RadioVirtual Santana" />
+    <meta name="copyright" content=" 2025 RadioVirtual Santana - Todos los derechos reservados" />
+    
+    <!-- Robots & SEO -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="revisit-after" content="1 days" />
+    <meta name="language" content="es-ES" />
+    <meta name="rating" content="general" />
+    <meta name="distribution" content="web" />
+    <meta name="geo.region" content="CO-ANT" />
+    <meta name="geo.placename" content="Santana, Colombia" />
+    <meta name="theme-color" content="#F59E0B" />
+    
+    <!-- Mobile Specific -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Radio Santana" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=yes" />
+    
+    <!-- Geo Tags -->
+    <meta name="geo.position" content="6.057; -75.646" />
+    <meta name="ICBM" content="6.057, -75.646" />
+    
+    <!-- Verification Tags -->
+    <meta name="google-site-verification" content="" />
+    <meta name="msvalidate.01" content="" />
+    <meta name="yandex-verification" content="" />
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y5MCPQ9LWJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Y5MCPQ9LWJ');
+      
+      // Configuración adicional para mejorar el seguimiento
+      gtag('config', 'G-Y5MCPQ9LWJ', {
+        'anonymize_ip': true,
+        'cookie_domain': 'radiosantana.netlify.app',
+        'cookie_flags': 'SameSite=None;Secure',
+        'send_page_view': true
+      });
+    </script>
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://radiosantana.netlify.app/" />
+    
+    <!-- Preconexiones DNS - Prioridad alta -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://www.google-analytics.com" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    
+    <!-- Preload de recursos críticos - Máxima prioridad -->
+    <link rel="preload" href="/src/main.ts" as="script" fetchpriority="high" />
+    <link rel="preload" href="/src/assets/logo.webp" as="image" type="image/webp" imagesrcset="/src/assets/logo.webp 1x, /src/assets/logo@2x.webp 2x" imagesizes="(max-width: 600px) 100vw, 50vw" />
+    
+    <!-- Preload de fuentes críticas -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="preload" href="https://fonts.gstatic.com/s/montserrat/v25/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2" as="font" type="font/woff2" crossorigin />
+    
+    <!-- Preload de la fuente de audio - Prioridad baja -->
+    <link rel="preload" href="/stream" as="fetch" type="audio/mpeg" importance="low" fetchpriority="low" />
+    
+    <!-- Prefetch de recursos que se usarán en navegaciones futuras -->
+    <link rel="prefetch" href="/src/components/player/RadioPlayer.vue" as="script" />
+    <link rel="prefetch" href="/src/views/HomeView.vue" as="script" />
+    <link rel="prefetch" href="/src/views/ShowsView.vue" as="script" />
+    
+    <!-- Carga diferida de estilos no críticos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'" />
+    
+    <!-- Preload de imágenes importantes que aparecen en el viewport inicial -->
+    <link rel="preload" as="image" href="/src/assets/hero-bg.webp" imagesrcset="/src/assets/hero-bg.webp 800w, /src/assets/hero-bg@2x.webp 1600w" imagesizes="100vw" />
+    
+    <!-- Preload de JSON para datos críticos -->
+    <link rel="preload" href="/api/now-playing.json" as="fetch" type="application/json" crossorigin="anonymous" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.facebook.com/share/16ap34GVi9/" />
-    <meta property="og:title" content="RadioVirtual Santana - Tu Radio 24/7" />
-    <meta property="og:description" content="Escucha la mejor música las 24 horas del día con RadioVirtual Santana" />
-    <meta property="og:image" content="/og-image.jpg" />
+    <meta property="og:url" content="https://radiosantana.netlify.app/" />
+    <meta property="og:title" content="RadioVirtual Santana | Tu Radio 24/7 en Línea" />
+    <meta property="og:description" content="Disfruta de la mejor programación musical en RadioVirtual Santana. Música variada, programas en vivo y el mejor entretenimiento las 24 horas del día." />
+    <meta property="og:image" content="https://radiosantana.netlify.app/og-image.jpg" />
+    <meta property="og:image:secure_url" content="https://radiosantana.netlify.app/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="RadioVirtual Santana - Tu estación de radio 24/7" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content="RadioVirtual Santana" />
+    <meta property="og:audio" content="https://radiosantana.netlify.app/stream" />
+    <meta property="og:audio:type" content="audio/mpeg" />
+    <meta property="og:audio:title" content="RadioVirtual Santana - En Vivo" />
+    <meta property="og:audio:artist" content="RadioVirtual Santana" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://x.com/NMradio_santana" />
-    <meta property="twitter:title" content="RadioVirtual Santana - Tu Radio 24/7" />
-    <meta property="twitter:description" content="Escucha la mejor música las 24 horas del día con RadioVirtual Santana" />
-    <meta property="twitter:image" content="/og-image.jpg" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@NMradio_santana" />
+    <meta name="twitter:creator" content="@NMradio_santana" />
+    <meta name="twitter:title" content="RadioVirtual Santana | Tu Radio 24/7 en Línea" />
+    <meta name="twitter:description" content="La mejor música y programas en vivo. Escucha RadioVirtual Santana desde cualquier lugar del mundo." />
+    <meta name="twitter:image" content="https://radiosantana.netlify.app/og-image.jpg" />
+    <meta name="twitter:image:alt" content="RadioVirtual Santana - Tu estación de radio 24/7" />
+    <meta name="twitter:player" content="https://radiosantana.netlify.app/player" />
+    <meta name="twitter:player:width" content="480" />
+    <meta name="twitter:player:height" content="120" />
+    <meta name="twitter:player:stream" content="https://radiosantana.netlify.app/stream" />
+    <meta name="twitter:player:stream:content_type" content="audio/mpeg" />
     
-    <title>RadioVirtual-Santana</title>
+    <!-- Título optimizado -->
+    <title>RadioVirtual Santana | Tu Radio 24/7 en Línea - Música y Entretenimiento</title>
     
-    <!-- Preconnect to external domains -->
-    <link rel="preconnect" href="https://images.pexels.com" />
+    <!-- Preconnect y dns-prefetch para mejorar el rendimiento -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- Preload de fuentes críticas -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" /></noscript>
     
+    <!-- Favicon y Apple Touch Icons -->
+    <link rel="icon" type="image/webp" href="/logo.webp" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    
+    <!-- Schema.org para Radio Station -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "RadioStation",
+      "name": "RadioVirtual Santana",
+      "description": "Tu estación de radio en línea con la mejor música y programación las 24 horas del día.",
+      "url": "https://radiosantana.netlify.app",
+      "logo": "https://radiosantana.netlify.app/logo.webp",
+      "image": "https://radiosantana.netlify.app/og-image.jpg",
+      "genre": ["Música", "Entretenimiento", "Noticias"],
+      "broadcastFrequency": "En línea",
+      "broadcastTimezone": "America/Bogota",
+      "priceRange": "Gratis",
+      "slogan": "Tu radio 24/7 con la mejor programación",
+      "foundingDate": "2023-01-01",
+      "hasBroadcastFrequency": {
+        "@type": "BroadcastFrequencySpecification",
+        "broadcastFrequencyValue": "En línea"
+      },
+      "broadcaster": {
+        "@type": "Organization",
+        "name": "RadioVirtual Santana",
+        "slogan": "Tu radio 24/7 con la mejor programación"
+      },
+      "potentialAction": {
+        "@type": "ListenAction",
+        "target": "https://radiosantana.netlify.app/#player",
+        "expectsAcceptanceOf": {
+          "@type": "Offer",
+          "category": "Free"
+        }
+      },
+      "sameAs": [
+        "https://www.facebook.com/share/16ap34GVi9/",
+        "https://x.com/NMradio_santana"
+      ],
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "contactType": "customer service",
+          "availableLanguage": ["Spanish"],
+          "url": "https://radiosantana.netlify.app/contacto"
+        }
+      ]
+    }
+    </script>
 
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
+    
+    <!-- Registro del Service Worker -->
+    <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch(err => {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+    </script>
+    
+    <!-- Google Analytics (reemplaza con tu ID de seguimiento) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TUCODIGO"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-TUCODIGO');
+    </script>
   </body>
 </html>

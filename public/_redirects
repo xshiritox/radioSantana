@@ -1,3 +1,81 @@
+# ==============================================================================
+# CONFIGURACIÓN DE REDIRECCIONES PARA NETLIFY
+# ==============================================================================
+
+# Redirección para SPA (Single Page Application)
 /* /index.html 200
+
+# Archivos estáticos
 /sitemap.xml /sitemap.xml 200
 /robots.txt /robots.txt 200
+/site.webmanifest /site.webmanifest 200
+
+# Redirecciones de URL antiguas (ejemplo)
+# /antigua-url /nueva-url 301
+
+# Redirección de www a no-www (manejado en configuración de Netlify)
+# www.radiosantana.netlify.app/* https://radiosantana.netlify.app/:splat 301!
+
+# Redirección de HTTP a HTTPS (manejado en configuración de Netlify)
+# http://radiosantana.netlify.app/* https://radiosantana.netlify.app/:splat 301!
+
+
+# Redirección para feeds RSS (si aplica)
+# /feed /rss.xml 301
+# /rss /rss.xml 301
+
+# Redirección para páginas de error personalizadas
+/404 /404.html 404
+/500 /500.html 500
+
+# Redirección de mayúsculas a minúsculas (si es necesario)
+# /* /:splat 301
+# ^/([^/]*[A-Z][^/]*)/?$ /${tolower:1} 301
+
+# Redirección para eliminar barras finales (opcional)
+# /*/ /:splat 301
+
+# Redirección para archivos específicos (ejemplo)
+# /antiguo-archivo.html /nuevo-archivo 301
+
+# Redirección para dominios alternativos (si aplica)
+# https://otro-dominio.com/* https://radiosantana.netlify.app/:splat 301!
+
+
+# ==============================================================================
+# CONFIGURACIÓN DE CACHÉ Y ENCABEZADOS
+# ==============================================================================
+
+# Configuración de caché para recursos estáticos
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.webp
+/*.jpg
+/*.jpeg
+/*.png
+/*.gif
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.woff
+/*.woff2
+/*.ttf
+/*.eot
+  Cache-Control: public, max-age=31536000, immutable
+
+# Configuración de seguridad
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Content-Security-Policy: default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval';
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# ==============================================================================
+# FIN DEL ARCHIVO _REDIRECTS
+# ==============================================================================
