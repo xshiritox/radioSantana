@@ -42,7 +42,7 @@ const contactInfo = {
       <!-- Main Footer Content -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
         <!-- Radio Info -->
-        <div class="space-y-4 lg:col-span-2">
+        <div class="space-y-4 lg:col-span-2 md:col-span-2">
           <div class="flex items-center space-x-3">
             <div class="relative group">
               <!-- Glow effect container -->
@@ -71,58 +71,63 @@ const contactInfo = {
           </div>
         </div>
 
-        <!-- Quick Links -->
-        <div class="space-y-4">
-          <h4 class="text-lg font-semibold text-gold-400">Enlaces Rápidos</h4>
-          <ul class="space-y-2">
-            <li>
-              <a href="#home" class="text-silver-300 hover:text-gold-400 transition-colors text-sm">
-                Inicio
-              </a>
-            </li>
-            <li>
-              <a href="#shows" class="text-silver-300 hover:text-gold-400 transition-colors text-sm">
-                Programación
-              </a>
-            </li>
-            <li>
-              <a href="#chat" class="text-silver-300 hover:text-gold-400 transition-colors text-sm">
-                Chat en Vivo
-              </a>
-            </li>
-            <li>
-              <a href="#requests" class="text-silver-300 hover:text-gold-400 transition-colors text-sm">
-                Peticiones Musicales
-              </a>
-            </li>
-            <li>
-              <a href="#news" class="text-silver-300 hover:text-gold-400 transition-colors text-sm">
-                Noticias
-              </a>
-            </li>
-          </ul>
-        </div>
+        <!-- Quick Links & Contact Container -->
+        <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <!-- Quick Links -->
+          <div class="space-y-4">
+            <h4 class="text-lg font-semibold text-gold-400">Enlaces Rápidos</h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#home" class="text-silver-300 hover:text-gold-400 transition-colors text-sm">
+                  Inicio
+                </a>
+              </li>
+              <li>
+                <a href="#shows" class="text-silver-300 hover:text-gold-400 transition-colors text-sm">
+                  Programación
+                </a>
+              </li>
+              <li>
+                <a href="#chat" class="text-silver-300 hover:text-gold-400 transition-colors text-sm">
+                  Chat en Vivo
+                </a>
+              </li>
+              <li>
+                <a href="#requests" class="text-silver-300 hover:text-gold-400 transition-colors text-sm">
+                  Peticiones Musicales
+                </a>
+              </li>
+              <li>
+                <a href="#news" class="text-silver-300 hover:text-gold-400 transition-colors text-sm">
+                  Noticias
+                </a>
+              </li>
+            </ul>
+          </div>
 
-        <!-- Contact Info -->
-        <div class="space-y-4">
-          <h4 class="text-lg font-semibold text-gold-400">Contacto</h4>
-          <div class="space-y-3 text-sm">
-            <div class="flex items-center space-x-2">
-              <span>📞</span>
-              <a :href="`tel:${contactInfo.phone}`" class="text-silver-300 hover:text-gold-400 transition-colors">
-                {{ contactInfo.phone }}
-              </a>
-            </div>
-            <div class="flex items-center space-x-2">
-              <span>✉️</span>
-              <a :href="`mailto:${contactInfo.email}`" class="text-silver-300 hover:text-gold-400 transition-colors">
-                {{ contactInfo.email }}
-              </a>
-            </div>
-            <div class="flex items-start space-x-2">
-              <span>📍</span>
-              <span class="text-silver-300">{{ contactInfo.address }}</span>
-            </div>
+          <!-- Contact Info -->
+          <div class="space-y-4">
+            <h4 class="text-lg font-semibold text-gold-400">Contacto</h4>
+            <ul class="space-y-3">
+              <li class="flex items-start space-x-3">
+                <i class="fas fa-phone mt-1 text-gold-400"></i>
+                <a :href="`tel:${contactInfo.phone}`" class="text-silver-300 hover:text-gold-400 transition-colors text-sm">
+                  {{ contactInfo.phone }}
+                </a>
+              </li>
+              <li class="flex items-start space-x-3">
+                <i class="fas fa-envelope mt-1 text-gold-400"></i>
+                <a :href="`mailto:${contactInfo.email}`" class="text-silver-300 hover:text-gold-400 transition-colors text-sm break-all">
+                  {{ contactInfo.email }}
+                </a>
+              </li>
+              <li class="flex items-start space-x-3">
+                <i class="fas fa-map-marker-alt mt-1 text-gold-400"></i>
+                <span class="text-silver-300 text-sm">
+                  {{ contactInfo.address }}
+                </span>
+              </li>
+            </ul>
           </div>
         </div>
 
