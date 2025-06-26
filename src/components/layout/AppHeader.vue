@@ -35,7 +35,12 @@ const menuItems = [
                 <img 
                   src="/src/assets/logo.webp" 
                   alt="Logo RadioVirtual Santana" 
+                  width="40"
+                  height="40"
+                  loading="lazy"
+                  decoding="async"
                   class="w-10 h-10 object-cover rounded-full transition-all duration-500 group-hover:scale-110"
+                  style="content-visibility: auto; will-change: transform;"
                 />
                 
                 <!-- Inner glow on hover -->
