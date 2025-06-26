@@ -6,8 +6,12 @@
   "scripts": {
     "dev": "vite",
     "type-check": "vue-tsc --noEmit",
+    "prebuild": "npm install --prefer-offline",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "clean": "if exist node_modules/.vite rmdir /s /q node_modules/.vite && if exist dist rmdir /s /q dist",
+    "postinstall": "vite --version & tailwindcss --version",
+    "build:ci": "npm run clean && npm install && npm run build"
   },
   "engines": {
     "node": ">=18.0.0",
