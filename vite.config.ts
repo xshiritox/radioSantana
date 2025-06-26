@@ -48,14 +48,25 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     emptyOutDir: true,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
     sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: {
+          vue: ['vue', 'vue-router', 'pinia'],
+          vendor: ['axios', 'firebase'],
+          ui: ['@heroicons/vue', '@headlessui/vue'],
           firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore']
-        }
-      }
-    }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
   },
   base: './'
 });

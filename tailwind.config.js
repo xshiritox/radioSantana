@@ -4,6 +4,14 @@ export default {
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
+  safelist: [
+    'text-gold-400', 'text-gold-300', 'text-gold-200', 
+    'from-gold-400', 'to-gold-200', 'via-gold-300', 
+    'from-silver-900', 'via-silver-800', 'to-silver-900', 
+    'text-silver-200', 'text-silver-300', 'text-white', 
+    'bg-gold-600', 'hover:bg-gold-600', 
+  ],
   theme: {
     extend: {
       colors: {
