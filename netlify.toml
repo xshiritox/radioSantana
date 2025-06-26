@@ -1,6 +1,6 @@
 [build]
   publish = "dist"
-  command = "npm run netlify-build"
+  command = "npm ci && npm run netlify-build"
 
 [build.environment]
   NODE_VERSION = "18.17.1"
@@ -8,6 +8,7 @@
   NODE_ENV = "production"
   VITE_API_URL = "https://api.radiosantana.netlify.app"
   VITE_GA_TRACKING_ID = ""
+  NPM_FLAGS = "--legacy-peer-deps"
 
 # Redirects
 [[redirects]]
