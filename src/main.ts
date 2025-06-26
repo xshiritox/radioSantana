@@ -36,8 +36,13 @@ router.afterEach((to) => {
 })
 
 // Manejador global de errores
-app.config.errorHandler = (err: unknown, instance, info) => {
-  console.error('Global error:', err, info)
+/**
+ * @param {unknown} err - El error que ocurrió
+ * @param {any} _instance - La instancia del componente donde ocurrió el error
+ * @param {string} _info - Información adicional sobre el error
+ */
+function handleError(err, _instance, _info) {
+  console.error('Global error:', err, _info)
   
   // Registrar el error en Google Analytics
   const errorMessage = err instanceof Error ? err.message : 'Error desconocido'
@@ -47,8 +52,8 @@ app.config.errorHandler = (err: unknown, instance, info) => {
     errorMessage,
     false, // No fatal
     {
-      component: instance?.$options?.name || 'Unknown',
-      info,
+      component: _instance?.$options?.name || 'Unknown',
+      info: _info,
       stack: errorStack
     }
   )
@@ -56,6 +61,8 @@ app.config.errorHandler = (err: unknown, instance, info) => {
   // Aquí podrías redirigir a una página de error o mostrar una notificación
   // router.push('/error')
 }
+
+app.config.errorHandler = handleError
 
 // Manejar errores no capturados
 window.addEventListener('error', (event) => {

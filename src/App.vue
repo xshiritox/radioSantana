@@ -34,17 +34,29 @@ useHead({
 
 // Smooth scroll behavior for navigation links
 onMounted(() => {
-  document.addEventListener('click', (e) => {
-    const target = e.target as HTMLElement;
-    if (target.tagName === 'A' && target.getAttribute('href')?.startsWith('#')) {
+  /**
+   * @param {MouseEvent} e - The click event
+   */
+  function handleClick(e) {
+    const target = /** @type {HTMLElement} */ (e.target).closest('a');
+    if (target && target.getAttribute('href')?.startsWith('#')) {
       e.preventDefault();
       const id = target.getAttribute('href')?.substring(1);
-      const element = document.getElementById(id!);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+      if (id) {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     }
-  });
+  }
+  
+  document.addEventListener('click', handleClick);
+  
+  // Cleanup
+  return () => {
+    document.removeEventListener('click', handleClick);
+  };
 });
 </script>
 
