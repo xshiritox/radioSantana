@@ -1,8 +1,13 @@
+// Firebase v9+ modular imports
 import { initializeApp, type FirebaseApp, getApps, getApp } from 'firebase/app';
 import { 
   getFirestore, 
   type Firestore,
-  doc, // Used for creating document references
+  doc,
+  collection,
+  query,
+  limit,
+  getDocs,
   onSnapshot,
   type DocumentSnapshot,
   type Unsubscribe
@@ -12,23 +17,21 @@ import {
   setPersistence, 
   browserLocalPersistence, 
   type Auth,
-  onAuthStateChanged
+  onAuthStateChanged,
+  type User
 } from 'firebase/auth';
 
-// Configuración de Firebase para producción
+// Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCdKhRlNZ_dFrEfRFWBPfKFNDyVaDHA8Jc",
-  authDomain: "radiosantananm-cda61.firebaseapp.com",
-  databaseURL: "https://radiosantananm-cda61-default-rtdb.firebaseio.com",
-  projectId: "radiosantananm-cda61",
-  storageBucket: "radiosantananm-cda61.appspot.com",
-  messagingSenderId: "969499423409",
-  appId: "1:969499423409:web:39d81d4686017371df2890",
-  measurementId: "G-NPFSJNBSJ8"
-};
-
-// Usar siempre la configuración de producción
-const config = firebaseConfig;
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCdKhRlNZ_dFrEfRFWBPfKFNDyVaDHA8Jc",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "radiosantananm-cda61.firebaseapp.com",
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || "https://radiosantananm-cda61-default-rtdb.firebaseio.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "radiosantananm-cda61",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "radiosantananm-cda61.appspot.com",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "969499423409",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:969499423409:web:39d81d4686017371df2890",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-NPFSJNBSJ8"
+} as const;
 
 // Dominios autorizados
 export const APP_DOMAINS = {
@@ -47,14 +50,18 @@ export const AUTH_DOMAINS = {
 let app: FirebaseApp;
 try {
   console.log('Initializing Firebase...');
-  app = getApps().length === 0 ? initializeApp(config) : getApp();
+  if (getApps().length === 0) {
+    app = initializeApp(firebaseConfig);
+  } else {
+    app = getApp();
+  }
   console.log('Firebase initialized successfully');
 } catch (error) {
   console.error('Error initializing Firebase:', error);
   throw error;
 }
 
-// Initialize Firestore with improved error handling
+// Initialize Firestore// Persistence is now handled in firebase-compat.js
 let db: Firestore;
 try {
   db = getFirestore(app);
@@ -74,8 +81,6 @@ try {
   throw error;
 }
 
-// Analytics initialization is now handled in the exports section
-
 /**
  * Checks the Firestore connection status
  * @returns Promise that resolves to true if connected, false otherwise
@@ -94,7 +99,7 @@ async function checkFirestoreConnection(): Promise<boolean> {
       const testDoc = doc(db, '.info/serverTime');
       const unsubscribe: Unsubscribe = onSnapshot(
         testDoc,
-        (_doc: DocumentSnapshot) => {  // Using _doc to indicate intentionally unused parameter
+        (_doc: DocumentSnapshot) => {
           clearTimeout(timeout);
           unsubscribe();
           console.log('Firestore connection is active');
@@ -121,7 +126,7 @@ function checkAuthConnection(): Promise<boolean> {
   return new Promise<boolean>((resolve) => {
     const unsubscribe = onAuthStateChanged(
       auth,
-      () => {  // Using empty param since we don't need the user object here
+      () => {
         unsubscribe();
         console.log('Auth connection is active');
         resolve(true);
@@ -134,14 +139,12 @@ function checkAuthConnection(): Promise<boolean> {
   });
 }
 
-// Analytics deshabilitado por solicitud del usuario
-
 export { 
   app, 
   db, 
   auth,
   checkFirestoreConnection, 
-  checkAuthConnection
+  checkAuthConnection 
 };
 
 // Configurar persistencia al inicio
@@ -177,8 +180,7 @@ export async function checkConnectivity(): Promise<boolean> {
       return false;
     }
 
-    // Intentar una operación simple de Firestore
-    const { getDocs, collection, query, limit } = await import('firebase/firestore');
+    // Usar las importaciones ya disponibles
     const testQuery = query(collection(db, 'test'), limit(1));
     
     try {
@@ -203,7 +205,7 @@ export async function checkConnectivity(): Promise<boolean> {
 // Configurar monitoreo de autenticación
 if (typeof window !== 'undefined') {
   // Monitorear estado de autenticación
-  auth.onAuthStateChanged((user) => {
+  onAuthStateChanged(auth, (user: User | null) => {
     console.log('Estado de autenticación cambiado:', user ? 'Usuario autenticado' : 'No autenticado');
     if (user) {
       console.log('Usuario:', user.email);

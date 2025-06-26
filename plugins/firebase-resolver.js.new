@@ -1,0 +1,136 @@
+import { fileURLToPath } from 'node:url';
+import { resolve, dirname } from 'node:path';
+import { createRequire } from 'node:module';
+
+// Create a require function that works in ESM
+const require = createRequire(import.meta.url);
+
+// Get the directory name in ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// List of Firebase packages to handle
+const firebasePackages = [
+  'app',
+  'auth',
+  'firestore',
+  'database',
+  'storage',
+  'messaging',
+  'functions'
+];
+
+/**
+ * Find the actual path of a Firebase package in node_modules
+ * This works with pnpm's node_modules structure
+ */
+function resolveFirebasePath(pkg) {
+  const paths = [
+    // Try direct resolution first (works in most cases)
+    () => {
+      try {
+        return require.resolve(`firebase/${pkg}/dist/index.esm.js`, {
+          paths: [process.cwd()]
+        });
+      } catch (e) {
+        return null;
+      }
+    },
+    // Try pnpm's .pnpm directory structure
+    () => {
+      try {
+        const pkgPath = require.resolve('firebase/package.json', {
+          paths: [process.cwd()]
+        });
+        const pkgDir = dirname(pkgPath);
+        return resolve(pkgDir, pkg, 'dist/index.esm.js');
+      } catch (e) {
+        return null;
+      }
+    },
+    // Fallback to node_modules in the project root
+    () => resolve(process.cwd(), 'node_modules', 'firebase', pkg, 'dist/index.esm.js'),
+    // Fallback to node_modules in the plugin directory
+    () => resolve(__dirname, '..', 'node_modules', 'firebase', pkg, 'dist/index.esm.js')
+  ];
+
+  for (const pathResolver of paths) {
+    try {
+      const resolved = pathResolver();
+      if (resolved) {
+        require.resolve(resolved); // Check if the file exists
+        return resolved;
+      }
+    } catch (e) {
+      // Ignore and try next path
+    }
+  }
+
+  throw new Error(`Could not resolve firebase/${pkg}/dist/index.esm.js`);
+}
+
+/**
+ * Vite plugin to handle Firebase module resolution with pnpm
+ * @returns {import('vite').Plugin}
+ */
+export default function firebaseResolver() {
+  // Create absolute paths to Firebase ESM files
+  const aliases = firebasePackages.reduce((acc, pkg) => {
+    try {
+      const resolvedPath = resolveFirebasePath(pkg);
+      console.log(`Resolved firebase/${pkg} to: ${resolvedPath}`);
+      acc[`firebase/${pkg}`] = resolvedPath;
+    } catch (error) {
+      console.error(`❌ Failed to resolve firebase/${pkg}:`, error.message);
+      throw error;
+    }
+    return acc;
+  }, {});
+
+  // Add main firebase alias
+  try {
+    const firebaseAppPath = resolveFirebasePath('app');
+    console.log(`Resolved firebase to: ${firebaseAppPath}`);
+    aliases['firebase'] = firebaseAppPath;
+  } catch (error) {
+    console.error('❌ Failed to resolve firebase/app:', error.message);
+    throw error;
+  }
+
+  return {
+    name: 'firebase-resolver',
+    config() {
+      return {
+        resolve: {
+          alias: Object.entries(aliases).map(([find, replacement]) => ({
+            find,
+            replacement
+          }))
+        },
+        optimizeDeps: {
+          // Explicitly include all Firebase packages
+          include: [
+            ...firebasePackages.map(pkg => `firebase/${pkg}`),
+            'firebase'
+          ],
+          // Exclude problematic packages from optimization
+          exclude: [
+            'firebase/firestore',
+            'firebase/auth',
+            'firebase/app'
+          ]
+        }
+      };
+    },
+    configResolved(config) {
+      if (config.command === 'serve') {
+        console.log('\n🔥 Firebase resolver active');
+        console.log('📦 Resolved Firebase paths:');
+        Object.entries(aliases).forEach(([pkg, path]) => {
+          console.log(`  ${pkg.padEnd(20)} -> ${path.replace(process.cwd(), '.')}`);
+        });
+        console.log('\n');
+      }
+    }
+  };
+}

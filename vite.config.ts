@@ -3,70 +3,52 @@ import vue from '@vitejs/plugin-vue';
 import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
+  // Configure plugins
+  plugins: [vue()],
+
+  // Basic configuration
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+    },
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
   },
-  plugins: [vue()],
-  server: {
-    proxy: {
-      // Configuración de proxy para Firebase
-      '^/(firestore|identitytoolkit|securetoken)/.*': {
-        target: 'https://www.googleapis.com',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => {
-          if (path.startsWith('/firestore')) {
-            return path.replace('/firestore', '/v1/projects/radiosantananm-cda61/databases/(default)/documents');
-          }
-          return path;
-        }
-      },
-      // Configuración para autenticación
-      '^/__/auth/.*': {
-        target: 'https://identitytoolkit.googleapis.com',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/__\/auth\//, '')
-      }
-    },
-    cors: {
-      origin: true, // Permite todos los orígenes
-      credentials: true
-    },
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-      'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-    },
-    hmr: {
-      protocol: 'ws',
-      host: 'localhost'
-    }
+
+  // Optimize dependencies
+  optimizeDeps: {
+    include: ['vue', 'vue-router', 'pinia', '@heroicons/vue/24/outline']
   },
+
+  // Build configuration
   build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    emptyOutDir: true,
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
-    sourcemap: true,
+    minify: 'esbuild',
+    sourcemap: false,
+    chunkSizeWarningLimit: 1000,
+    target: 'es2020',
     rollupOptions: {
       output: {
         manualChunks: {
           vue: ['vue', 'vue-router', 'pinia'],
-          vendor: ['axios', 'firebase'],
-          ui: ['@heroicons/vue', '@headlessui/vue'],
-          firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore']
-        },
-      },
-    },
-    chunkSizeWarningLimit: 1000,
+          icons: ['@heroicons/vue/24/outline']
+        }
+      }
+    }
   },
-  base: './'
+
+  // Development server configuration
+  server: {
+    hmr: true,
+    open: true
+  },
+
+  // Preview configuration
+  preview: {
+    port: 4173,
+    open: true
+  },
+
+  // Global variable definitions
+  define: {
+    'process.env': {}
+  }
 });
